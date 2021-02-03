@@ -1,0 +1,2787 @@
+openapi: "3.0.3"
+info:
+  description: "Management of an election system for pre-election use cases"
+  version: "0.0.1"
+  title: "Election Data Management API"
+  termsOfService: ""
+  contact:
+    name: "Alan Wessman"
+    email: "somebody@osetfoundation.org"
+  license:
+    name: "OSET Public License v2.0"
+    url: "https://www.OSETFoundation.org/public-license"
+servers:
+  - url: "https://www.OSETFoundation.org/VersaEDM/v1"
+    description: "Placeholder URL for the intended eventual service"
+tags:
+  - name: "ballot-style"
+    description: "Management of ballot styles for an election"
+  - name: "candidate"
+    description: "Management of candidates for an election"
+  - name: "contest"
+    description: "Management of contests for an election"
+  - name: "election"
+    description: "Management of an election"
+  - name: "election-report"
+    description: "Creation and fetching of election reports"
+  - name: "headers"
+    description: "Management of reusable headers for ballot styles"
+  - name: "office"
+    description: "Management of political offices to which candidates can be elected"
+  - name: "party"
+    description: "Management of political parties"
+  - name: "person"
+    description: "Management of personal info of candidates, officials, administrators, etc."
+  - name: "reporting-unit"
+    description: "Management of geopolitical reporting units, jurisdictions, etc."
+paths:
+  /ballot-styles/{ballotStyleId}:
+    put:
+      tags:
+        - ballot-style
+      summary: "Update a given ballot style"
+      operationId: "updateBallotStyle"
+      parameters:
+        - in: path
+          name: "ballotStyleId"
+          description: "Identifies the ballot style to be updated"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/BallotStyle'
+      responses:
+        200:
+          description: OK
+        400:
+          description: >
+            Invalid request body supplied.
+        404:
+          description: "Ballot style not found"
+    delete:
+      parameters:
+        - in: path
+          name: "ballotStyleId"
+          description: "Identifies the ballot style to be deleted"
+          required: true
+          schema:
+            type: "string"
+      tags:
+        - "ballot-style"
+      summary: "Remove a ballot style from an election"
+      description: ""
+      operationId: "deleteBallotStyle"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Ballot style not found"
+        409:
+          description: >
+            Deletion not allowed, probably because election has already happened
+            and/or has results/counts associated with it.
+  /candidates/{candidateId}:
+    put:
+      tags:
+        - candidate
+      summary: "Update a given candidate"
+      operationId: "updateCandidate"
+      parameters:
+        - in: path
+          name: "candidateId"
+          description: "Identifies the candidate to be updated"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Candidate'
+      responses:
+        200:
+          description: OK
+        400:
+          description: >
+            Invalid request body supplied.
+        404:
+          description: "Candidate not found"
+    delete:
+      parameters:
+        - in: path
+          name: "candidateId"
+          description: "Identifies the candidate to be deleted"
+          required: true
+          schema:
+            type: "string"
+      tags:
+        - "candidate"
+      summary: "Remove a candidate from an election"
+      description: ""
+      operationId: "deleteCandidate"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Candidate not found"
+        409:
+          description: >
+            Deletion not allowed, probably because election has already happened
+            and/or has results/counts associated with it.
+  /contests/{contestId}:
+    put:
+      tags:
+        - contest
+      summary: "Update a given contest"
+      operationId: "updateContest"
+      parameters:
+        - in: path
+          name: "contestId"
+          description: "Identifies the contest to be updated"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      oneOf:
+                        - $ref: '#/components/schemas/BallotMeasureContest'
+                        - $ref: '#/components/schemas/CandidateContest'
+                        - $ref: '#/components/schemas/PartyContest'
+                        - $ref: '#/components/schemas/RetentionContest'
+      responses:
+        200:
+          description: OK
+        400:
+          description: >
+            Invalid request body supplied.
+            Also, if contest type in request does not match the type of the contest
+            as it already exists in the system, this response is returned.
+        404:
+          description: "Contest not found"
+    delete:
+      parameters:
+        - in: path
+          name: "contestId"
+          description: "Identifies the contest to be deleted"
+          required: true
+          schema:
+            type: "string"
+      tags:
+        - "contest"
+      summary: "Remove a contest from an election"
+      description: ""
+      operationId: "deleteContest"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Contest not found"
+        409:
+          description: >
+            Deletion not allowed, probably because election has already happened
+            and/or has results/counts associated with it.
+  /elections:
+    get:
+      tags:
+        - election
+      summary: "Returns all elections defined in the system"
+      operationId: "getElections"
+      parameters:
+        - in: query
+          name: "page"
+          description: "Indicates the set of paginated results to fetch"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponsePaginated'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Election'
+    post:
+      tags:
+        - "election"
+      summary: "Create a new election"
+      description: ""
+      operationId: "createElection"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Election'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /elections/{electionId}:
+    parameters:
+      - in: path
+        name: "electionId"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - "election"
+      summary: "Fetch info on an existing election by ID"
+      description: ""
+      operationId: "getElection"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Election'
+        404:
+          description: "Election not found"
+    put:
+      tags:
+        - "election"
+      summary: "Update an existing election"
+      description: ""
+      operationId: "updateElection"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Election'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+        404:
+          description: "Election not found"
+  /elections/{electionId}/ballot-styles:
+    get:
+      tags:
+        - ballot-style
+      summary: "Get a list of ballot styles defined for the identified election"
+      operationId: "getBallotStylesForElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "ID of the election to query for its ballot styles"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/BallotStyle'
+        404:
+          description: "Specified election not found"
+    post:
+      tags:
+        - ballot-style
+      summary: "Add a ballot style to a specified election"
+      operationId: "addBallotStyleToElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "Identifier for the election to add the ballot style to"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/BallotStyle'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /elections/{electionId}/candidates:
+    get:
+      tags:
+        - candidate
+      summary: "Get a list of candidates defined for the identified election"
+      operationId: "getCandidatesForElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "ID of the election to query for its candidates"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Candidate'
+        404:
+          description: "Specified election not found"
+    post:
+      tags:
+        - candidate
+      summary: "Add a candidate to a specified election"
+      operationId: "addCandidateToElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "Identifier for the election to add the candidate to"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Candidate'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /elections/{electionId}/contests:
+    get:
+      tags:
+        - contest
+      summary: "Get a list of contests defined for the identified election"
+      operationId: "getContestsForElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "ID of the election to query for its contests"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          anyOf:
+                            - $ref: '#/components/schemas/BallotMeasureContest'
+                            - $ref: '#/components/schemas/CandidateContest'
+                            - $ref: '#/components/schemas/PartyContest'
+                            - $ref: '#/components/schemas/RetentionContest'
+        404:
+          description: "Specified election not found"
+    post:
+      tags:
+        - contest
+      summary: "Add a contest to a specified election"
+      operationId: "addContestToElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "Identifier for the election to add the contest to"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      oneOf:
+                        - $ref: '#/components/schemas/BallotMeasureContest'
+                        - $ref: '#/components/schemas/CandidateContest'
+                        - $ref: '#/components/schemas/PartyContest'
+                        - $ref: '#/components/schemas/RetentionContest'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /election-reports:
+    get:
+      tags:
+        - election-report
+      summary: "Get a list of election reports created by the system"
+      operationId: "getElectionReports"
+      parameters:
+        - in: query
+          name: "page"
+          description: "Indicates the set of paginated results to fetch"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponsePaginated'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/ElectionReport'
+    post:
+      tags:
+        - election-report
+      summary: "Create a new election report"
+      operationId: "createElectionReport"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/ElectionReportCreationRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ElectionReport'
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /election-reports/{electionReportId}:
+    parameters:
+      - in: path
+        name: "electionReportId"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - election-report
+      summary: "Get the full contents of an election report"
+      operationId: "getElectionReport"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ElectionReport'
+        404:
+          description: "Identified election report does not exist"
+  /headers:
+    get:
+      tags:
+        - headers
+      summary: "Get a list of reusable headers defined in the system"
+      operationId: "getHeaders"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponsePaginated'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Header'
+  /headers/{headerId}:
+    parameters:
+      - in: path
+        name: "headerId"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - headers
+      summary: "Get a specific header referenced by an external identifier"
+      operationId: "getHeader"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Header'
+        404:
+          description: "Header not found"
+    put:
+      tags:
+        - headers
+      summary: "Modify a specific header referenced by an external identifier"
+      operationId: "updateHeader"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Header'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+        404:
+          description: "Header not found"
+    delete:
+      tags:
+        - headers
+      summary: "Delete a specific header referenced by an external identifier"
+      operationId: "deleteHeader"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Header not found"
+        409:
+          description: "Header cannot be deleted; other objects depend on it"
+  /offices:
+    get:
+      tags:
+        - "office"
+      summary: "Return all political offices defined in the system"
+      description: ""
+      operationId: "getOffices"
+      parameters:
+        - in: query
+          name: "page"
+          description: "Indicates the set of paginated results to fetch"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponsePaginated'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Office'
+    post:
+      tags:
+        - "office"
+      summary: "Add a political office"
+      description: ""
+      operationId: "createOffice"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Office'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /offices/{officeId}:
+    parameters:
+      - in: path
+        name: "officeId"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - "office"
+      summary: "Return a political office by ID"
+      description: ""
+      operationId: "getOffice"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Office'
+        404:
+          description: "Office not found"
+    put:
+      tags:
+        - "office"
+      summary: "Modify a political office"
+      description: ""
+      operationId: "updateOffice"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Office'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+        404:
+          description: "Office not found"
+    delete:
+      tags:
+        - "office"
+      summary: "Remove a political office"
+      description: ""
+      operationId: "deleteOffice"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Office not found"
+        409:
+          description: >
+            Deletion not allowed, probably because election has already happened
+            and/or has results/counts associated with it.
+  /parties:
+    get:
+      tags:
+        - "party"
+      summary: "Returns all political parties defined in the system"
+      description: ""
+      operationId: "getParties"
+      parameters:
+        - in: query
+          name: "page"
+          description: "Indicates the set of paginated results to fetch"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponsePaginated'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Party'
+    post:
+      tags:
+        - "party"
+      summary: "Add a political party"
+      description: ""
+      operationId: "createParty"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Party'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /parties/{partyId}:
+    parameters:
+      - in: path
+        name: "partyId"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - "party"
+      summary: "Returns a political party by ID"
+      description: ""
+      operationId: "getParty"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Party'
+        404:
+          description: "Party not found"
+    put:
+      tags:
+        - "party"
+      summary: "Modify a political party"
+      description: ""
+      operationId: "updateParty"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Party'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+        404:
+          description: "Party not found"
+    delete:
+      tags:
+        - "party"
+      summary: "Remove a political party"
+      description: ""
+      operationId: "deleteParty"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Party not found"
+        409:
+          description: >
+            Deletion not allowed, probably because election has already happened
+            and/or has results/counts associated with it.
+  /persons:
+    get:
+      tags:
+        - "person"
+      summary: "Returns all persons defined in the system or those that match a given search string"
+      description: ""
+      operationId: "getPersons"
+      parameters:
+        - in: query
+          name: "page"
+          description: "Indicates the set of paginated results to fetch"
+          required: false
+          schema:
+            type: "string"
+        - in: query
+          name: "search"
+          description: "A search string to limit the results to matching records"
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponsePaginated'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Person'
+    post:
+      tags:
+        - "person"
+      summary: "Add a person"
+      description: ""
+      operationId: "createPerson"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Person'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /persons/{personId}:
+    parameters:
+      - in: path
+        name: "personId"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - "person"
+      summary: "Returns a person by ID"
+      description: ""
+      operationId: "getPerson"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Person'
+        404:
+          description: "Person not found"
+    put:
+      tags:
+        - "person"
+      summary: "Modify a person's information"
+      description: ""
+      operationId: "updatePerson"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Person'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+        404:
+          description: "Person not found"
+    delete:
+      tags:
+        - "person"
+      summary: "Remove a person"
+      description: ""
+      operationId: "deletePerson"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Person not found"
+        409:
+          description: >
+            Deletion not allowed, probably because election has already happened
+            and/or has results/counts associated with it.
+  /reporting-units:
+    get:
+      tags:
+        - "reporting-unit"
+      summary: "Fetch all reporting units or those of specified types"
+      description: ""
+      operationId: "getReportingUnitsByType"
+      parameters:
+        - in: query
+          name: "type"
+          description: "Specifies the type of unit to return. All reporting units are returned if not specified."
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ReportingUnitType'
+        - in: query
+          name: "otherType"
+          description: "Specifies the custom type if the type parameter is 'other'."
+          required: false
+          schema:
+            type: "string"
+        - in: query
+          name: "page"
+          description: "Indicates the set of paginated results to fetch"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponsePaginated'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/ReportingUnit'
+    post:
+      tags:
+        - "reporting-unit"
+      summary: "Add a reporting unit"
+      description: ""
+      operationId: "createReportingUnit"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/ReportingUnit'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /reporting-units/{reportingUnitId}:
+    parameters:
+      - in: path
+        name: "reportingUnitId"
+        required: true
+        schema:
+          type: "string"
+    put:
+      tags:
+        - "reporting-unit"
+      summary: "Update a reporting unit"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/ReportingUnit'
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Identified reporting unit does not exist"
+    delete:
+      tags:
+        - "reporting-unit"
+      summary: "Remove a reporting unit"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Identified reporting unit does not exist"
+        409:
+          description: >
+            Deletion not allowed, probably because election has already happened
+            and/or has results/counts associated with it.
+  /reporting-units/{reportingUnitId}/elections:
+    parameters:
+      - in: path
+        name: "reportingUnitId"
+        description: "ID of the reporting unit associated with a list of elections"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - "election"
+        - "reporting-unit"
+      summary: "Fetch a list of elections for a given reporting unit"
+      description: ""
+      operationId: "getElectionsByReportingUnit"
+      parameters:
+        - in: query
+          name: "includeSubdivisions"
+          description: "If true, also includes elections in reporting units that are subdivisions of the specified one."
+          required: false
+          schema:
+            type: "boolean"
+        - in: query
+          name: "page"
+          description: "Indicates the set of paginated results to fetch"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Election'
+        404:
+          description: "Identified reporting unit does not exist"
+components:
+  # TODO: add 'securitySchemes'
+  schemas:
+    AnnotatedString:
+      type: "object"
+      description: >
+        Used as a type for character strings; it adds a 16-character annotation
+        to a character string.
+      required:
+        - "@type"
+        - Content
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.AnnotatedString"
+        Annotation:
+          type: "string"
+          description: The text of the annotation.
+          maxLength: 32
+          example: "annotation"
+        Content:
+          type: "string"
+          description: The text to which the annotation applies.
+          example: "some content"
+    AnnotatedUri:
+      type: "object"
+      description: >
+        Used as a type for character strings that represent Uniform Resource
+        Identifiers (URI); it adds a 16-character annotation to a
+        character string.
+      required:
+        - "@type"
+        - Content
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.AnnotatedUri"
+        Annotation:
+          type: "string"
+          description: The text of the annotation.
+          maxLength: 32
+          example: "annotation"
+        Content:
+          type: "string"
+          description: The URI to which the annotation applies.
+          format: "uri"
+          example: "http://example.com/some_example"
+    ApiRequest:
+      type: "object"
+      description: Common properties for an incoming API request.
+    ApiResponse:
+      type: "object"
+      description: Common properties for an outbound API response.
+      required:
+        - type
+        - referenceId
+        - changeId
+      properties:
+        errors:
+          type: "array"
+          description: >
+            List of errors, if any, that occurred in the handling of the
+            request.
+          items:
+            type: "object"
+            description: >
+              Structured information on the nature and cause of an error.
+            properties:
+              code:
+                type: "string"
+                description: Software-friendly identifier for the type of error.
+              message:
+                type: "string"
+                description: Human-friendly explanation of the error.
+        _refId:
+          type: "string"
+          description: >
+            Uniquely identifies the request-handling execution that produced
+            this response, for troubleshooting/auditing. This id is included in
+            any service-side logs associated with the request/response.
+          format: "uuid"
+    ApiResponsePaginated:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: "object"
+          description: API Response object for paginated results.
+          properties:
+            _first:
+              type: "string"
+              format: "uri"
+              description: >
+                URI for the first set of paginated results.
+            _prev:
+              type: "string"
+              format: "uri"
+              description: >
+                URI for the previous set of paginated results. If blank or
+                absent, there are no previous pages of results available to fetch.
+            _next:
+              type: "string"
+              format: "uri"
+              description: >
+                URI for the next set of paginated results. If blank or
+                absent, there are no more pages of results available to fetch.
+            _last:
+              type: "string"
+              format: "uri"
+              description: >
+                URI for the last set of paginated results. May be the same as _first.
+            _page_max:
+              type: "integer"
+              description: >
+                Number of items in a complete page of results.
+            _total_results:
+              type: "integer"
+              description: >
+                Total number of results available to fetch across all pages. May be
+                blank or absent if this number is difficult or costly to compute.
+    BallotCounts:
+      allOf:
+        - $ref: '#/components/schemas/Counts'
+        - type: "object"
+          description: Used for identifying various ballot counts.
+          required:
+            - "@type"
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.BallotCounts"
+            BallotsCast:
+              type: "integer"
+              description: Number of ballots cast.
+              minimum: 0
+            BallotsOutstanding:
+              type: "integer"
+              description: Number of ballots not yet counted.
+              minimum: 0
+            BallotsRejected:
+              type: "integer"
+              description: Number of ballots rejected.
+              minimum: 0
+    BallotMeasureContestAbstract:
+      allOf:
+        - $ref: '#/components/schemas/Contest'
+        - type: "object"
+          description: >
+            For ballot measure (i.e., referenda or a tax measure) and
+            judicial retention contests.
+            If 'other' is used for the Type, include the actual type name in
+            OtherType.
+          properties:
+            ConStatement:
+              description: Text of a statement in opposition to the measure.
+              allOf:
+                - $ref: '#/components/schemas/InternationalizedText'
+            EffectOfAbstain:
+              description: >
+                Text explaining how an abstention from voting is handled.
+              allOf:
+                - $ref: '#/components/schemas/InternationalizedText'
+            FullText:
+              description: Full text of the wording for the measure.
+              allOf:
+                - $ref: '#/components/schemas/InternationalizedText'
+            InfoUri:
+              type: "array"
+              description: URIs to further information about the measure.
+              items:
+                $ref: '#/components/schemas/AnnotatedUri'
+            PassageThreshold:
+              description: >
+                Text explaining the threshold needed for the measure to pass.
+              allOf:
+                - $ref: '#/components/schemas/InternationalizedText'
+            ProStatement:
+              description: Text of a statement supporting the measure.
+              allOf:
+                - $ref: '#/components/schemas/InternationalizedText'
+            SummaryText:
+              description: Summary text for the measure.
+              allOf:
+                - $ref: '#/components/schemas/InternationalizedText'
+            Type:
+              type: "string"
+              description: The type of contest.
+              enum:
+                - "ballot-measure"
+                - "initiative"
+                - "recall"
+                - "referendum"
+                - "other"
+            OtherType:
+              type: "string"
+              description: The type of contest, if Type is 'other'.
+    BallotMeasureContest:
+      allOf:
+        - $ref: '#/components/schemas/BallotMeasureContestAbstract'
+        - type: "object"
+          required:
+            - "@type"
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.BallotMeasureContest"
+    BallotMeasureSelection:
+      description: >
+        For a contest selection in a ballot measure contest.
+        Because judicial or other retention contests are often treated
+        like ballot measure contests, this can be used also
+        for retention contests.
+      allOf:
+        - $ref: '#/components/schemas/ContestSelection'
+        - type: "object"
+          required:
+            - "@type"
+            - Selection
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.BallotMeasureSelection"
+            Selection:
+              description: >
+                Contains the text used to indicate a vote for or against the
+                ballot measure, e.g., “yes”, “no”.
+              allOf:
+                - $ref: '#/components/schemas/InternationalizedText'
+    BallotStyle:
+      type: "object"
+      description: >
+        For defining a ballot style composed of ordered content
+        (i.e. Headers or Contests) and their contest selections,
+        and associating the ballot style with a political party,
+        a reference to an image of the ballot, and a reference to
+        a precinct or other geopolitical unit that the ballot is unique to.
+
+        BallotStyle references OrderedContent to include content that
+        appears on that ballot style. To preserve any rotation associated
+        with the ballot, it is expected that the generating application
+        will list the occurrences of OrderedContest in the order as on
+        the ballot for the associated geopolitical unit.
+
+        BallotStyle references one or more GpUnit instances defined for
+        the associated precincts or split precincts. If the ballot style
+        is associated with multiple precincts (or other geographies),
+        multiple references to the precinct GpUnit instances can be included.
+      required:
+        - "@type"
+        - GpUnitIds
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.BallotStyle"
+        ExternalIdentifier:
+          type: "array"
+          description: List of externally-defined identifiers for this object.
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        GpUnitIds:
+          type: "array"
+          description: >
+            Unique identifiers for one or more GpUnit instances. For associating
+            specific geopolitical units with the ballot style.
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        ImageUri:
+          type: "array"
+          description: URIs for one or more ballot images.
+          items:
+            $ref: '#/components/schemas/AnnotatedUri'
+        OrderedContent:
+          type: "array"
+          description: >
+            For associating a ballot style with ballot content, such as contests
+            or headers.
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/OrderedContest'
+              - $ref: '#/components/schemas/OrderedHeader'
+        PartyIds:
+          type: "array"
+          description: >
+            Unique identifiers for one or more Party instances. For associating
+            one or more parties with the ballot style.
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+    Candidate:
+      type: "object"
+      description: >
+        For defining information about a candidate in a contest.
+        CandidateSelection references Candidate instances to associate
+        one or more candidates with a contest selection.
+        Candidate uses the Party association to reference the
+        candidate’s political party. If the candidate is endorsed
+        by other parties for a particular contest, the endorsing
+        parties are referenced using the CandidateSelection attribute.
+      required:
+        - "@id"
+        - "@type"
+        - BallotName
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Candidate"
+        BallotName:
+          description: The candidate’s name as listed on the ballot.
+          allOf:
+            - $ref: '#/components/schemas/InternationalizedText'
+        ContactInformation:
+          description: Contact information for the candidate/campaign.
+          allOf:
+            - $ref: '#/components/schemas/ContactInformation'
+        ExternalIdentifier:
+          type: "array"
+          description: List of externally-defined identifiers for this object.
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        FileDate:
+          description: Date when the candidate filed for the contest.
+          allOf:
+            - $ref: '#/components/schemas/Date'
+        IsIncumbent:
+          type: "boolean"
+          description: >
+            Boolean to indicate whether the candidate is the incumbent for the
+            office associated with the contest. Assumed to be “no” if not
+            present.
+        IsTopTicket:
+          type: "boolean"
+          description: >
+            Boolean to indicate whether the candidate is the top of a ticket
+            that includes multiple candidates, such as president/VP or
+            governor/lieutenant governor. Assumed to be “no” if not
+            present.
+        PartyId:
+          description: For associating a party with the candidate.
+          allOf:
+            - $ref: '#/components/schemas/ObjectIdRef'
+        PersonId:
+          description: >
+            For associating more detailed information about the candidate.
+          allOf:
+            - $ref: '#/components/schemas/ObjectIdRef'
+        PreElectionStatus:
+          type: "string"
+          description: >
+            Registration status of the candidate, e.g., filed, qualified, etc.
+          enum:
+            - "filed"
+            - "qualified"
+            - "withdrawn"
+        PostElectionStatus:
+          type: "string"
+          description: >
+            Final status of the candidate, e.g., winner, withdrawn, etc.
+          enum:
+            - "advanced-to-runoff"
+            - "defeated"
+            - "projected-winner"
+            - "winner"
+            - "withdrawn"
+    CandidateContest:
+      allOf:
+        - $ref: '#/components/schemas/Contest'
+        - type: "object"
+          description: >
+            For a contest that involves selecting one or more candidates.
+            This class optionally references Office and Party. If the candidate
+            contest is associated with a ticket (of candidates) and each candidate
+            in the ticket is associated with a separate office, the association
+            to Office can reference each of the separate offices. For example,
+            if the contest is for the state governor ticket but Governor and
+            Lieutenant (Lt.) Governor are both separate offices, the association
+            references first to the Office instance defined for the Governor’s
+            office and then to the Lt. Governor’s office. In this case, it is
+            expected that the generating application will list the multiple
+            references according to a jurisdiction-defined ordering scheme,
+            e.g., Governor first and Lt. Governor second. Note that when using
+            the CandidateSelection class to associate the candidates with a
+            contest selection for the contest, the order of the candidates should
+            match the order of offices. Again, using the example of the state
+            governor ticket, if the offices are listed with Governor first and
+            Lt. Governor second, then the order of the candidates in the
+            ContestSelection instance should be identical, with the Governor
+            candidate first and the Lt. Governor candidate second.
+          required:
+            - VotesAllowed
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.CandidateContest"
+            NumberElected:
+              type: "integer"
+              description: >
+                Number of candidates that are elected in the contest (“n” of n-of-m).
+              minimum: 0
+            NumberRunoff:
+              type: "integer"
+              description: The number of candidates in a runoff contest.
+              minimum: 0
+            OfficeIds:
+              type: "array"
+              description: For associating office descriptions.
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+            PrimaryPartyIds:
+              type: "array"
+              description: For associating parties with the contest.
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+            VotesAllowed:
+              type: "integer"
+              description: Maximum number of votes per voter in this contest.
+              minimum: 0
+    CandidateSelection:
+      allOf:
+        - $ref: '#/components/schemas/ContestSelection'
+        - type: "object"
+          description: >
+            For the contest selections in a candidate contest, including for write-ins.
+            References to multiple Candidate instances can be included if necessary,
+            e.g., when the contest selection would be for a ticket of candidates
+            (unless the ticket itself is defined as a candidate).
+
+            EndorsementParty is used to reference any associated endorsement parties
+            other than the specific party of the candidate (Candidate references
+            Party for that purpose). For example, if a candidate of one party is
+            also endorsed by a second party, use EndorsementParty to reference
+            the second party. A second example would be for ballot fusion as used
+            in some states, where the same candidate is listed multiple times
+            in the same contest, but with different endorsement parties. When
+            multiple candidates are referenced for a ticket and the ordering of
+            the candidates is important to preserve, it is expected that the
+            generating application will list the references to Candidate instances
+            according to the ordering scheme in place.
+          required:
+            - "@type"
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.CandidateSelection"
+            CandidateIds:
+              type: "array"
+              description: >
+                For associating a candidate with the candidate selection on
+                the ballot and for cases where the contest selection is for
+                multiple candidates, e.g., a ticket.
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+            EndorsementPartyIds:
+              type: "array"
+              description: >
+                For associating one or more endorsing parties with the
+                candidate selection.
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+            IsWriteIn:
+              type: "boolean"
+              description: >
+                Indicates whether the candidate is a write-in, e.g., true or false.
+                Assumed to be false if not present.
+    Coalition:
+      description: >
+        For defining a coalition, i.e., a collection of parties organized
+        for the purpose of endorsing a candidates in a contest.
+        Coalition instances themselves are composed of multiple Party
+        references along with a reference to an associated Contests.
+        If there are no associated Contests, a general default is that
+        the coalition endorses the associated parties.
+      allOf:
+        - $ref: '#/components/schemas/PartyAbstract'
+        - type: "object"
+          required:
+            - "@type"
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.Coalition"
+            ContestIds:
+              type: "array"
+              description: For associating contests with the coalition.
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+            PartyIds:
+              type: "array"
+              description: For associating parties with the coalition.
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+    ContactInformation:
+      type: "object"
+      description: >
+        For defining contact information about objects such as persons,
+        boards of authorities, organizations, etc. Election,
+        ElectionAdministration, Person, GpUnit, and Office include
+        ContactInformation. To include an address for the contact, use
+        multiple occurrences of AddressLine. It is expected that the
+        generating application will list the name of the person/organization
+        in the first occurrence of AddressLine, with subsequent ordered
+        occurrences for street address, city, state, zip code, etc. Directions
+        can be used to supply any additional address-related information that
+        may appear in multiple languages. ContactInformation includes LatLng so
+        as to associate latitude/longitude with the contact address. Email,
+        Fax, and Phone are of type AnnotatedString, which permits up to a
+        16-character annotation to be associated with the data.
+      required:
+        - "@type"
+        - Label
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.ContactInformation"
+        AddressLine:
+          type: "array"
+          description: For associating an address with the contact.
+          items:
+            type: "string"
+        Directions:
+          description: Directional information in addition to address information.
+          allOf:
+            - $ref: '#/components/schemas/InternationalizedText'
+        Email:
+          type: "array"
+          description: Email addresses associated with the contact.
+          items:
+            $ref: '#/components/schemas/AnnotatedString'
+        Fax:
+          type: "array"
+          description: Fax numbers associated with the contact.
+          items:
+            $ref: '#/components/schemas/AnnotatedString'
+        Label:
+          type: "string"
+          description: For use as needed and compatibility with the VIP schema.
+        LatLng:
+          description: >
+            For latitude and longitude information associated with the contact.
+          allOf:
+            - $ref: '#/components/schemas/LatLng'
+        Name:
+          type: "string"
+          description: Name associated with the contact.
+        Phone:
+          type: "array"
+          description: Phone numbers associated with the contact.
+          items:
+            $ref: '#/components/schemas/AnnotatedString'
+        Schedule:
+          type: "array"
+          description: For associating one or more schedules with the contact.
+          items:
+            $ref: '#/components/schemas/Schedule'
+        Uri:
+          type: "array"
+          description: One or more URIs associated with the contact.
+          items:
+            $ref: '#/components/schemas/AnnotatedUri'
+    Contest:
+      type: "object"
+      required:
+        - "@id"
+        - ElectionDistrictId
+        - Name
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        Abbreviation:
+          type: "string"
+        BallotSubTitle:
+          $ref: '#/components/schemas/InternationalizedText'
+        BallotTitle:
+          $ref: '#/components/schemas/InternationalizedText'
+        ContestSelection:
+          type: "array"
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/BallotMeasureSelection'
+              - $ref: '#/components/schemas/CandidateSelection'
+              - $ref: '#/components/schemas/PartySelection'
+        CountStatus:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/CountStatus'
+        ElectionDistrictId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        HasRotation:
+          type: "boolean"
+        Name:
+          type: "string"
+        OtherCounts:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/OtherCounts'
+        OtherVoteVariation:
+          type: "string"
+        SequenceOrder:
+          type: "integer"
+        SubUnitsReported:
+          type: "integer"
+        TotalSubUnits:
+          type: "integer"
+        VoteVariation:
+          type: "string"
+          enum:
+            - "1-of-m"
+            - "approval"
+            - "borda"
+            - "cumulative"
+            - "majority"
+            - "n-of-m"
+            - "plurality"
+            - "proportional"
+            - "range"
+            - "rcv"
+            - "super-majority"
+            - "other"
+    ContestSelection:
+      type: "object"
+      required:
+        - "@id"
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        SequenceOrder:
+          type: "integer"
+        VoteCounts:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/VoteCounts'
+    CountItemType:
+      type: "string"
+      enum:
+        - "absentee"
+        - "absentee-fwab"
+        - "absentee-in-person"
+        - "absentee-mail"
+        - "early"
+        - "election-day"
+        - "provisional"
+        - "seats"
+        - "total"
+        - "uocava"
+        - "write-in"
+        - "other"
+    Counts:
+      type: "object"
+      required:
+        - GpUnitId
+      properties:
+        DeviceClass:
+          $ref: '#/components/schemas/DeviceClass'
+        GpUnitId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        IsSuppressedForPrivacy:
+          type: "boolean"
+        OtherType:
+          type: "string"
+        Round:
+          type: "integer"
+          minimum: 1
+        Type:
+          $ref: '#/components/schemas/CountItemType'
+    CountStatus:
+      type: "object"
+      required:
+        - "@type"
+        - Status
+        - Type
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.CountStatus"
+        OtherType:
+          type: "string"
+        Status:
+          type: "string"
+          enum:
+            - "completed"
+            - "in-process"
+            - "not-processed"
+            - "unknown"
+        Type:
+          $ref: '#/components/schemas/CountItemType'
+    Date:
+      type: "string"
+      format: "date"
+    DateTimeWithZone:
+      type: "string"
+      format: "datetime"
+      pattern: "[0-9]{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]|(24:00:00))(Z|[+-]((0[0-9]|1[0-3]):[0-5][0-9]|14:00))"
+      example: "2019-03-23T14:51:27Z"
+    DeviceClass:
+      type: "object"
+      required:
+        - "@type"
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.DeviceClass"
+        Manufacturer:
+          type: "string"
+        Model:
+          type: "string"
+        OtherType:
+          type: "string"
+        Type:
+          type: "string"
+          enum:
+            - "bmd"
+            - "dre"
+            - "manual-count"
+            - "opscan-central"
+            - "opscan-precinct"
+            - "unknown"
+            - "other"
+    Election:
+      type: "object"
+      required:
+        - "@type"
+        - ElectionScopeId
+        - EndDate
+        - Name
+        - StartDate
+        - Type
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Election"
+        BallotCounts:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/BallotCounts'
+        BallotStyle:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/BallotStyle'
+        Candidate:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Candidate'
+        ContactInformation:
+          $ref: '#/components/schemas/ContactInformation'
+        Contest:
+          type: "array"
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/BallotMeasureContest'
+              - $ref: '#/components/schemas/CandidateContest'
+              - $ref: '#/components/schemas/PartyContest'
+              - $ref: '#/components/schemas/RetentionContest'
+        CountStatus:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/CountStatus'
+        ElectionScopeId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        EndDate:
+          type: "string"
+          format: "date"
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        Name:
+          $ref: '#/components/schemas/InternationalizedText'
+        OtherType:
+          type: "string"
+        StartDate:
+          type: "string"
+          format: "date"
+        Type:
+          type: "string"
+          enum:
+            - general
+            - partisan-primary-closed
+            - partisan-primary-open
+            - primary
+            - runoff
+            - special
+            - other
+    ElectionAdministration:
+      type: "object"
+      required:
+        - "@type"
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.ElectionAdministration"
+        ContactInformation:
+          $ref: '#/components/schemas/ContactInformation'
+        ElectionOfficialPersonIds:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        Name:
+          type: "string"
+    ElectionReport:
+      type: "object"
+      required:
+        - "@type"
+        - Format
+        - GeneratedDate
+        - Issuer
+        - IssuerAbbreviation
+        - SequenceEnd
+        - SequenceStart
+        - Status
+        - VendorApplicationId
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.ElectionReport"
+        Election:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Election'
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        Format:
+          type: "string"
+          enum:
+            - precinct-level
+            - summary-contest
+        GeneratedDate:
+          $ref: '#/components/schemas/DateTimeWithZone'
+        GpUnit:
+          type: "array"
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/ReportingDevice'
+              - $ref: '#/components/schemas/ReportingUnit'
+        Header:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Header'
+        Issuer:
+          type: "string"
+        IssuerAbbreviation:
+          type: "string"
+        IsTest:
+          type: "boolean"
+        Notes:
+          type: "string"
+        Office:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Office'
+        OfficeGroup:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/OfficeGroup'
+        Party:
+          type: "array"
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Coalition'
+              - $ref: '#/components/schemas/Party'
+        Person:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Person'
+        SequenceEnd:
+          type: "integer"
+        SequenceStart:
+          type: "integer"
+        Status:
+          type: "string"
+          enum:
+            - certified
+            - correction
+            - pre-election
+            - recount
+            - unofficial-complete
+            - unofficial-partial
+        TestType:
+          type: "string"
+        VendorApplicationId:
+          type: "string"
+    ElectionReportCreationRequest:
+      description: "Parameters for creating an election report"
+      type: "object"
+      properties:
+        ElectionIds:
+          description: "List of IDs of elections to include in the report"
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        ExternalIdentifier:
+          description: "The client's identifier for the report"
+          allOf:
+            - $ref: '#/components/schemas/ExternalIdentifier'
+        Format:
+          description: "Determines the detail level of data included in the report"
+          type: "string"
+          enum:
+            - precinct-level
+            - summary-contest
+        IsTest:
+          description: "Indicates whether the report is for testing purposes"
+          type: "boolean"
+        Notes:
+          description: "Any notes that the client wishes to attach to the report"
+          type: "string"
+        OfficeIds:
+          description: "List of IDs of offices to include in the report"
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        PartyIds:
+          description: "List of IDs of parties to include in the report"
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        PersonIds:
+          description: "List of IDs of persons to include in the report"
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        ReportingDeviceIds:
+          description: "List of IDs of reporting devices to include in the report"
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        ReportingUnitIds:
+          description: "List of IDs of reporting units to include in the report"
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        Sequencing:
+          description: "Information to designate the report as 'part n of m'"
+          type: "object"
+          required:
+            - ThisPart
+            - NumParts
+          properties:
+            ThisPart:
+              description: "The report's number in the sequence of parts"
+              type: "integer"
+              minimum: 1
+            NumParts:
+              description: "The total number of parts in the sequence of reports"
+              type: "integer"
+              minimum: 1
+        TestType:
+          description: "A description of the type of test, e.g., pre-election, logic and accuracy, etc."
+          type: "string"
+    ExternalIdentifier:
+      type: "object"
+      required:
+        - "@type"
+        - Value
+        - Type
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.ExternalIdentifier"
+        Label:
+          type: "string"
+        Value:
+          type: "string"
+          example: "ocd-division/country:us/state:wv"
+        Type:
+          $ref: '#/components/schemas/IdentifierType'
+    GpUnit:
+      type: "object"
+      required:
+        - "@id"
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        Name:
+          type: "string"
+        ComposingGpUnitIds:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+    Header:
+      type: "object"
+      required:
+        - "@id"
+        - "@type"
+        - Name
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Header"
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        Name:
+          $ref: '#/components/schemas/InternationalizedText'
+    Hours:
+      type: "object"
+      required:
+        - "@type"
+        - EndTime
+        - StartTime
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Hours"
+        Day:
+          type: "string"
+          enum:
+            - all
+            - sunday
+            - monday
+            - tuesday
+            - wednesday
+            - thursday
+            - friday
+            - saturday
+            - weekday
+            - weekend
+        EndTime:
+          $ref: '#/components/schemas/TimeWithZone'
+        Label:
+          type: "string"
+        StartTime:
+          $ref: '#/components/schemas/TimeWithZone'
+    HtmlColorString:
+      type: "string"
+      pattern: "[0-9a-fA-F]{6}"
+      format: "rgb-hex"
+      example: "33bbff"
+    IdentifierType:
+      type: "string"
+      enum:
+        - "fips"
+        - "local-level"
+        - "national-level"
+        - "ocd-id"
+        - "state-level"
+        - "other"
+      description: >
+        Election data-related codes:
+         * `fips` - For FIPS codes.
+         * `local-level` - For a code that is specific to a county or other similar locality.
+         * `national-level` - For a code that is used at the national level other than "fips" or "ocd-id".
+         * `ocd-id` - For Open Civic Data identifiers.
+         * `state-level` - For a code that is specific to a state.
+         * `other` - Used when the type of code is not included in this enumeration.
+      example: "ocd-id"
+    InternationalizedText:
+      type: "object"
+      required:
+        - "@type"
+        - Text
+      properties:
+        "@type":
+          type: string
+          enum:
+            - "ElectionResults.InternationalizedText"
+        Label:
+          type: "string"
+        Text:
+          type: "array"
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/LanguageString'
+    LanguageString:
+      type: "object"
+      required:
+        - "@type"
+        - Content
+        - Language
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.LanguageString"
+        Content:
+          type: "string"
+        Language:
+          type: "string"
+          format: "xsd:language"
+    LatLng:
+      type: "object"
+      required:
+        - "@type"
+        - Latitude
+        - Longitude
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.LatLng"
+        Label:
+          type: "string"
+        Latitude:
+          type: "number"
+          format: "double"
+        Longitude:
+          type: "number"
+          format: "double"
+        Source:
+          type: "string"
+    ObjectId:
+      type: "string"
+      description: "An xsi:idref datatype"
+      pattern: '[A-Za-z_][A-Za-z0-9._-]*'
+      minLength: 1
+    ObjectIdRef:
+      type: "string"
+      description: "An xsi:idref datatype"
+      pattern: '[A-Za-z_][A-Za-z0-9._-]*'
+      minLength: 1
+    Office:
+      type: "object"
+      required:
+        - "@id"
+        - "@type"
+        - Name
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Office"
+        ContactInformation:
+          $ref: '#/components/schemas/ContactInformation'
+        Description:
+          $ref: '#/components/schemas/InternationalizedText'
+        ElectionDistrictId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        FilingDeadline:
+          type: "string"
+          format: "date"
+        IsPartisan:
+          type: "boolean"
+        Name:
+          $ref: '#/components/schemas/InternationalizedText'
+        OfficeHolderPersonIds:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        Term:
+          $ref: '#/components/schemas/Term'
+    OfficeGroup:
+      type: "object"
+      required:
+        - "@type"
+        - Name
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.OfficeGroup"
+        Label:
+          type: "string"
+        Name:
+          type: "string"
+        OfficeIds:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        SubOfficeGroup:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/OfficeGroup'
+    OrderedContest:
+      type: "object"
+      required:
+        - "@type"
+        - ContestId
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.OrderedContest"
+        ContestId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        OrderedContestSelectionIds:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+    OrderedHeader:
+      type: "object"
+      required:
+        - "@type"
+        - HeaderId
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.OrderedHeader"
+        HeaderId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        OrderedContent:
+          type: "array"
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/OrderedContest'
+              - $ref: '#/components/schemas/OrderedHeader'
+    OtherCounts:
+      type: "object"
+      required:
+        - "@type"
+        - GpUnitId
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.OtherCounts"
+        DeviceClass:
+          $ref: '#/components/schemas/DeviceClass'
+        GpUnitId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        Overvotes:
+          type: "number"
+          format: "float"
+        Undervotes:
+          type: "number"
+          format: "float"
+        WriteIns:
+          type: "integer"
+    PartyAbstract:
+      type: "object"
+      required:
+        - "@id"
+        - Name
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        Abbreviation:
+          type: "string"
+        Color:
+          $ref: '#/components/schemas/HtmlColorString'
+        ContactInformation:
+          $ref: '#/components/schemas/ContactInformation'
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        IsRecognizedParty:
+          type: "boolean"
+        LeaderPersonIds:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ObjectIdRef'
+        LogoUri:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/AnnotatedUri'
+        Name:
+          $ref: '#/components/schemas/InternationalizedText'
+    Party:
+      allOf:
+        - $ref: '#/components/schemas/PartyAbstract'
+        - type: "object"
+          required:
+            - "@type"
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.Party"
+    PartyContest:
+      allOf:
+        - $ref: '#/components/schemas/Contest'
+        - type: "object"
+          required:
+            - "@type"
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.PartyContest"
+    PartyRegistration:
+      type: "object"
+      required:
+        - "@type"
+        - Count
+        - PartyId
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.PartyRegistration"
+        Count:
+          type: "integer"
+        PartyId:
+          $ref: '#/components/schemas/ObjectIdRef'
+    PartySelection:
+      allOf:
+        - $ref: '#/components/schemas/ContestSelection'
+        - type: "object"
+          required:
+            - "@type"
+            - PartyIds
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.PartySelection"
+            PartyIds:
+              type: "array"
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+    Person:
+      type: "object"
+      required:
+        - "@id"
+        - "@type"
+      properties:
+        "@id":
+          $ref: '#/components/schemas/ObjectId'
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Person"
+        ContactInformation:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ContactInformation'
+        DateOfBirth:
+          type: "string"
+          format: "date"
+        ExternalIdentifier:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        FirstName:
+          type: "string"
+        FullName:
+          $ref: '#/components/schemas/InternationalizedText'
+        Gender:
+          type: "string"
+        LastName:
+          type: "string"
+        MiddleName:
+          type: "array"
+          items:
+            type: "string"
+        Nickname:
+          type: "string"
+        PartyId:
+          $ref: '#/components/schemas/ObjectIdRef'
+        Prefix:
+          type: "string"
+        Profession:
+          $ref: '#/components/schemas/InternationalizedText'
+        Suffix:
+          type: "string"
+        Title:
+          $ref: '#/components/schemas/InternationalizedText'
+    ReportingDevice:
+      allOf:
+        - $ref: '#/components/schemas/GpUnit'
+        - type: "object"
+          required:
+            - "@type"
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.ReportingDevice"
+            DeviceClass:
+              $ref: '#/components/schemas/DeviceClass'
+            SerialNumber:
+              type: "string"
+    ReportingUnit:
+      allOf:
+        - $ref: '#/components/schemas/GpUnit'
+        - type: "object"
+          required:
+            - "@type"
+            - Type
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.ReportingUnit"
+            AuthorityIds:
+              type: "array"
+              items:
+                $ref: '#/components/schemas/ObjectIdRef'
+            ContactInformation:
+              $ref: '#/components/schemas/ContactInformation'
+            CountStatus:
+              type: "array"
+              items:
+                $ref: '#/components/schemas/CountStatus'
+            ElectionAdministration:
+              $ref: '#/components/schemas/ElectionAdministration'
+            IsDistricted:
+              type: "boolean"
+            IsMailOnly:
+              type: "boolean"
+            Number:
+              type: "string"
+            OtherType:
+              type: "string"
+            PartyRegistration:
+              type: "array"
+              items:
+                $ref: '#/components/schemas/PartyRegistration'
+            SpatialDimension:
+              $ref: '#/components/schemas/SpatialDimension'
+            SubUnitsReported:
+              type: "integer"
+            TotalSubUnits:
+              type: "integer"
+            Type:
+              $ref: '#/components/schemas/ReportingUnitType'
+            VotersParticipated:
+              type: "integer"
+            VotersRegistered:
+              type: "integer"
+    ReportingUnitType:
+      type: "string"
+      enum:
+        - ballot-batch
+        - ballot-style-area
+        - borough
+        - city
+        - city-council
+        - combined-precinct
+        - congressional
+        - country
+        - county
+        - county-council
+        - drop-box
+        - judicial
+        - municipality
+        - polling-place
+        - precinct
+        - school
+        - special
+        - split-precinct
+        - state
+        - state-house
+        - state-senate
+        - town
+        - township
+        - utility
+        - village
+        - vote-center
+        - ward
+        - water
+        - other
+    RetentionContest:
+      allOf:
+        - $ref: '#/components/schemas/BallotMeasureContestAbstract'
+        - type: "object"
+          required:
+            - "@type"
+            - CandidateId
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.RetentionContest"
+            CandidateId:
+              $ref: '#/components/schemas/ObjectIdRef'
+            OfficeId:
+              $ref: '#/components/schemas/ObjectIdRef'
+    Schedule:
+      type: "object"
+      required:
+        - "@type"
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Schedule"
+        EndDate:
+          type: "string"
+          format: "date"
+        Hours:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Hours'
+        IsOnlyByAppointment:
+          type: "boolean"
+        IsOrByAppointment:
+          type: "boolean"
+        IsSubjectToChange:
+          type: "boolean"
+        Label:
+          type: "string"
+        StartDate:
+          type: "string"
+          format: "date"
+    SpatialDimension:
+      type: "object"
+      required:
+        - "@type"
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.SpatialDimension"
+        MapUri:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/AnnotatedUri'
+        SpatialExtent:
+          $ref: '#/components/schemas/SpatialExtent'
+    SpatialExtent:
+      type: "object"
+      required:
+        - "@type"
+        - Coordinates
+        - Format
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.SpatialExtent"
+        Coordinates:
+          type: "string"
+        Format:
+          type: "string"
+          enum:
+            - "geo-json"
+            - "gml"
+            - "kml"
+            - "shp"
+            - "wkt"
+    Term:
+      type: "object"
+      required:
+        - "@type"
+      properties:
+        "@type":
+          type: "string"
+          enum:
+            - "ElectionResults.Term"
+        EndDate:
+          type: "string"
+          format: "date"
+        Label:
+          type: "string"
+        StartDate:
+          type: "string"
+          format: "date"
+        Type:
+          type: "string"
+          enum:
+            - "full-term"
+            - "unexpired-term"
+    TimeWithZone:
+      type: "string"
+      format: "time"
+      pattern: "(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]|(24:00:00))(Z|[+-]((0[0-9]|1[0-3]):[0-5][0-9]|14:00))"
+    VoteCounts:
+      allOf:
+        - $ref: '#/components/schemas/Counts'
+        - type: "object"
+          required:
+            - "@type"
+            - Count
+          properties:
+            "@type":
+              type: "string"
+              enum:
+                - "ElectionResults.VoteCounts"
+            Count:
+              type: "number"
+              format: "double"
+# TODO: add 'security'
