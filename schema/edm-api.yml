@@ -89,6 +89,32 @@ paths:
             Deletion not allowed, probably because election has already happened
             and/or has results/counts associated with it.
   /candidates/{candidateId}:
+    get:
+      tags:
+        - candidate
+      summary: "Fetch information for a single candidate"
+      operationId: "getCandidate"
+      parameters:
+        - in: path
+          name: "candidateId"
+          description: "Identifies the candidate record to be returned"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Candidate'
+        404:
+          description: "Candidate not found"
     put:
       tags:
         - candidate
@@ -142,6 +168,36 @@ paths:
             Deletion not allowed, probably because election has already happened
             and/or has results/counts associated with it.
   /contests/{contestId}:
+    get:
+      tags:
+        - contest
+      summary: "Fetch information for a single contest"
+      operationId: "getContest"
+      parameters:
+        - in: path
+          name: "contestId"
+          description: "Identifies the contest record to be returned"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        oneOf:
+                          - $ref: '#/components/schemas/BallotMeasureContest'
+                          - $ref: '#/components/schemas/CandidateContest'
+                          - $ref: '#/components/schemas/PartyContest'
+                          - $ref: '#/components/schemas/RetentionContest'
+        404:
+          description: "Contest not found"
     put:
       tags:
         - contest
@@ -1107,6 +1163,32 @@ paths:
         required: true
         schema:
           type: "string"
+    get:
+      tags:
+        - "reporting-unit"
+      summary: "Fetch information for a single reporting unit"
+      operationId: "getReportingUnit"
+      parameters:
+        - in: path
+          name: "reportingUnitId"
+          description: "Identifies the reporting unit record to be returned"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ReportingUnit'
+        404:
+          description: "Reporting unit not found"
     put:
       tags:
         - "reporting-unit"
