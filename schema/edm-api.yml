@@ -1,6 +1,6 @@
 openapi: "3.0.3"
 info:
-  description: "Management of an election system for pre-election use cases"
+  description: "Management of an election system for pre-election use cases."
   version: "0.0.1"
   title: "Election Data Management API"
   termsOfService: ""
@@ -12,24 +12,24 @@ info:
     url: "https://www.OSETFoundation.org/public-license"
 servers:
   - url: "https://www.OSETFoundation.org/VersaEDM/v1"
-    description: "Placeholder URL for the intended eventual service"
+    description: "Placeholder URL for the intended eventual service."
 tags:
   - name: "ballot-style"
-    description: "Management of ballot styles for an election"
+    description: "Management of ballot styles for an election."
   - name: "candidate"
-    description: "Management of candidates for an election"
+    description: "Management of candidates for a contest."
   - name: "contest"
-    description: "Management of contests for an election"
+    description: "Management of contests for an election."
   - name: "election"
-    description: "Management of an election"
+    description: "Management of an election."
   - name: "election-report"
-    description: "Creation and fetching of election reports"
+    description: "Creation and fetching of election reports."
   - name: "headers"
-    description: "Management of reusable headers for ballot styles"
+    description: "Management of reusable headers for ballot styles."
   - name: "office"
-    description: "Management of political offices to which candidates can be elected"
+    description: "Management of political offices to which candidates can be elected."
   - name: "party"
-    description: "Management of political parties"
+    description: "Management of political parties."
   - name: "person"
     description: "Management of personal info of candidates, officials, administrators, etc."
   - name: "reporting-unit"
@@ -44,7 +44,7 @@ paths:
       parameters:
         - in: path
           name: "ballotStyleId"
-          description: "Identifies the ballot style to be updated"
+          description: "Identifies the ballot style to be updated."
           required: true
           schema:
             type: "string"
@@ -65,12 +65,12 @@ paths:
           description: >
             Invalid request body supplied.
         404:
-          description: "Ballot style not found"
+          description: "Ballot style not found."
     delete:
       parameters:
         - in: path
           name: "ballotStyleId"
-          description: "Identifies the ballot style to be deleted"
+          description: "Identifies the ballot style to be deleted."
           required: true
           schema:
             type: "string"
@@ -83,7 +83,7 @@ paths:
         200:
           description: OK
         404:
-          description: "Ballot style not found"
+          description: "Ballot style not found."
         409:
           description: >
             Deletion not allowed, probably because election has already happened
@@ -97,7 +97,7 @@ paths:
       parameters:
         - in: path
           name: "candidateId"
-          description: "Identifies the candidate record to be returned"
+          description: "Identifies the candidate record to be returned."
           required: true
           schema:
             type: "string"
@@ -123,7 +123,7 @@ paths:
       parameters:
         - in: path
           name: "candidateId"
-          description: "Identifies the candidate to be updated"
+          description: "Identifies the candidate to be updated."
           required: true
           schema:
             type: "string"
@@ -144,25 +144,25 @@ paths:
           description: >
             Invalid request body supplied.
         404:
-          description: "Candidate not found"
+          description: "Candidate not found."
     delete:
       parameters:
         - in: path
           name: "candidateId"
-          description: "Identifies the candidate to be deleted"
+          description: "Identifies the candidate to be deleted."
           required: true
           schema:
             type: "string"
       tags:
         - "candidate"
-      summary: "Remove a candidate from an election"
+      summary: "Remove a candidate from an election and any contests they are associated with"
       description: ""
       operationId: "deleteCandidate"
       responses:
         200:
           description: OK
         404:
-          description: "Candidate not found"
+          description: "Candidate not found."
         409:
           description: >
             Deletion not allowed, probably because election has already happened
@@ -176,7 +176,7 @@ paths:
       parameters:
         - in: path
           name: "contestId"
-          description: "Identifies the contest record to be returned"
+          description: "Identifies the contest record to be returned."
           required: true
           schema:
             type: "string"
@@ -206,7 +206,7 @@ paths:
       parameters:
         - in: path
           name: "contestId"
-          description: "Identifies the contest to be updated"
+          description: "Identifies the contest to be updated."
           required: true
           schema:
             type: "string"
@@ -233,12 +233,12 @@ paths:
             Also, if contest type in request does not match the type of the contest
             as it already exists in the system, this response is returned.
         404:
-          description: "Contest not found"
+          description: "Contest not found."
     delete:
       parameters:
         - in: path
           name: "contestId"
-          description: "Identifies the contest to be deleted"
+          description: "Identifies the contest to be deleted."
           required: true
           schema:
             type: "string"
@@ -251,7 +251,7 @@ paths:
         200:
           description: OK
         404:
-          description: "Contest not found"
+          description: "Contest not found."
         409:
           description: >
             Deletion not allowed, probably because election has already happened
@@ -265,7 +265,7 @@ paths:
       parameters:
         - in: query
           name: "page"
-          description: "Indicates the set of paginated results to fetch"
+          description: "Indicates the set of paginated results to fetch."
           required: false
           schema:
             type: "string"
@@ -305,7 +305,7 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -336,7 +336,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/Election'
         404:
-          description: "Election not found"
+          description: "Election not found."
     put:
       tags:
         - "election"
@@ -359,9 +359,9 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
         404:
-          description: "Election not found"
+          description: "Election not found."
   /elections/{electionId}/ballot-styles:
     get:
       tags:
@@ -371,7 +371,7 @@ paths:
       parameters:
         - in: path
           name: "electionId"
-          description: "ID of the election to query for its ballot styles"
+          description: "ID of the election to query for its ballot styles."
           required: true
           schema:
             type: "string"
@@ -390,7 +390,7 @@ paths:
                         items:
                           $ref: '#/components/schemas/BallotStyle'
         404:
-          description: "Specified election not found"
+          description: "Specified election not found."
     post:
       tags:
         - ballot-style
@@ -399,7 +399,7 @@ paths:
       parameters:
         - in: path
           name: "electionId"
-          description: "Identifier for the election to add the ballot style to"
+          description: "Identifier for the election to add the ballot style to."
           required: true
           schema:
             type: "string"
@@ -417,21 +417,21 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
-  /elections/{electionId}/candidates:
+  /contests/{contestId}/candidates:
     get:
       tags:
         - candidate
-      summary: "Get a list of candidates defined for the identified election"
-      operationId: "getCandidatesForElection"
+      summary: "Get a list of candidates associated with the identified contest"
+      operationId: "getCandidatesForContest"
       parameters:
         - in: path
-          name: "electionId"
-          description: "ID of the election to query for its candidates"
+          name: "contestId"
+          description: "ID of the contest to query for its candidates."
           required: true
           schema:
             type: "string"
@@ -450,16 +450,16 @@ paths:
                         items:
                           $ref: '#/components/schemas/Candidate'
         404:
-          description: "Specified election not found"
+          description: "Specified contest not found."
     post:
       tags:
         - candidate
-      summary: "Add a candidate to a specified election"
-      operationId: "addCandidateToElection"
+      summary: "Add a candidate to a specified contest"
+      operationId: "addCandidateToContest"
       parameters:
         - in: path
-          name: "electionId"
-          description: "Identifier for the election to add the candidate to"
+          name: "contestId"
+          description: "Identifier for the contest to add the candidate to."
           required: true
           schema:
             type: "string"
@@ -477,7 +477,7 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -491,7 +491,7 @@ paths:
       parameters:
         - in: path
           name: "electionId"
-          description: "ID of the election to query for its contests"
+          description: "ID of the election to query for its contests."
           required: true
           schema:
             type: "string"
@@ -514,7 +514,7 @@ paths:
                             - $ref: '#/components/schemas/PartyContest'
                             - $ref: '#/components/schemas/RetentionContest'
         404:
-          description: "Specified election not found"
+          description: "Specified election not found."
     post:
       tags:
         - contest
@@ -523,7 +523,7 @@ paths:
       parameters:
         - in: path
           name: "electionId"
-          description: "Identifier for the election to add the contest to"
+          description: "Identifier for the election to add the contest to."
           required: true
           schema:
             type: "string"
@@ -545,7 +545,7 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -559,7 +559,7 @@ paths:
       parameters:
         - in: query
           name: "page"
-          description: "Indicates the set of paginated results to fetch"
+          description: "Indicates the set of paginated results to fetch."
           required: false
           schema:
             type: "string"
@@ -607,7 +607,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/ElectionReport'
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -637,7 +637,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/ElectionReport'
         404:
-          description: "Identified election report does not exist"
+          description: "Identified election report does not exist."
   /headers:
     get:
       tags:
@@ -700,9 +700,9 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
         404:
-          description: "Header not found"
+          description: "Header not found."
     delete:
       tags:
         - headers
@@ -712,9 +712,9 @@ paths:
         200:
           description: OK
         404:
-          description: "Header not found"
+          description: "Header not found."
         409:
-          description: "Header cannot be deleted; other objects depend on it"
+          description: "Header cannot be deleted; other objects depend on it."
   /offices:
     get:
       tags:
@@ -725,7 +725,7 @@ paths:
       parameters:
         - in: query
           name: "page"
-          description: "Indicates the set of paginated results to fetch"
+          description: "Indicates the set of paginated results to fetch."
           required: false
           schema:
             type: "string"
@@ -765,7 +765,7 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -796,7 +796,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/Office'
         404:
-          description: "Office not found"
+          description: "Office not found."
     put:
       tags:
         - "office"
@@ -819,9 +819,9 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
         404:
-          description: "Office not found"
+          description: "Office not found."
     delete:
       tags:
         - "office"
@@ -847,7 +847,7 @@ paths:
       parameters:
         - in: query
           name: "page"
-          description: "Indicates the set of paginated results to fetch"
+          description: "Indicates the set of paginated results to fetch."
           required: false
           schema:
             type: "string"
@@ -887,7 +887,7 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -941,9 +941,9 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
         404:
-          description: "Party not found"
+          description: "Party not found."
     delete:
       tags:
         - "party"
@@ -954,7 +954,7 @@ paths:
         200:
           description: OK
         404:
-          description: "Party not found"
+          description: "Party not found."
         409:
           description: >
             Deletion not allowed, probably because election has already happened
@@ -969,13 +969,13 @@ paths:
       parameters:
         - in: query
           name: "page"
-          description: "Indicates the set of paginated results to fetch"
+          description: "Indicates the set of paginated results to fetch."
           required: false
           schema:
             type: "string"
         - in: query
           name: "search"
-          description: "A search string to limit the results to matching records"
+          description: "A search string to limit the results to matching records."
           required: false
           schema:
             type: string
@@ -1015,7 +1015,7 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -1046,7 +1046,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/Person'
         404:
-          description: "Person not found"
+          description: "Person not found."
     put:
       tags:
         - "person"
@@ -1069,9 +1069,9 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
         404:
-          description: "Person not found"
+          description: "Person not found."
     delete:
       tags:
         - "person"
@@ -1082,7 +1082,7 @@ paths:
         200:
           description: OK
         404:
-          description: "Person not found"
+          description: "Person not found."
         409:
           description: >
             Deletion not allowed, probably because election has already happened
@@ -1111,7 +1111,7 @@ paths:
             type: "string"
         - in: query
           name: "page"
-          description: "Indicates the set of paginated results to fetch"
+          description: "Indicates the set of paginated results to fetch."
           required: false
           schema:
             type: "string"
@@ -1151,7 +1151,7 @@ paths:
         200:
           description: OK
         400:
-          description: "Invalid request body supplied"
+          description: "Invalid request body supplied."
           content:
             application/json:
               schema:
@@ -1171,7 +1171,7 @@ paths:
       parameters:
         - in: path
           name: "reportingUnitId"
-          description: "Identifies the reporting unit record to be returned"
+          description: "Identifies the reporting unit record to be returned."
           required: true
           schema:
             type: "string"
@@ -1188,7 +1188,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/ReportingUnit'
         404:
-          description: "Reporting unit not found"
+          description: "Reporting unit not found."
     put:
       tags:
         - "reporting-unit"
@@ -1209,7 +1209,7 @@ paths:
         200:
           description: OK
         404:
-          description: "Identified reporting unit does not exist"
+          description: "Identified reporting unit does not exist."
     delete:
       tags:
         - "reporting-unit"
@@ -1218,7 +1218,7 @@ paths:
         200:
           description: OK
         404:
-          description: "Identified reporting unit does not exist"
+          description: "Identified reporting unit does not exist."
         409:
           description: >
             Deletion not allowed, probably because election has already happened
@@ -1227,7 +1227,7 @@ paths:
     parameters:
       - in: path
         name: "reportingUnitId"
-        description: "ID of the reporting unit associated with a list of elections"
+        description: "ID of the reporting unit associated with a list of elections."
         required: true
         schema:
           type: "string"
@@ -1247,7 +1247,7 @@ paths:
             type: "boolean"
         - in: query
           name: "page"
-          description: "Indicates the set of paginated results to fetch"
+          description: "Indicates the set of paginated results to fetch."
           required: false
           schema:
             type: "string"
@@ -1266,7 +1266,7 @@ paths:
                         items:
                           $ref: '#/components/schemas/Election'
         404:
-          description: "Identified reporting unit does not exist"
+          description: "Identified reporting unit does not exist."
 components:
   # TODO: add 'securitySchemes'
   schemas:
