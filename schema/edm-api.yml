@@ -269,6 +269,13 @@ paths:
           required: false
           schema:
             type: "string"
+        - in: query
+          name: "full"
+          description: "Indicates whether to include child objects (true) or just top-level summary info (false)."
+          required: false
+          schema:
+            type: "boolean"
+            default: false
       responses:
         200:
           description: OK
@@ -323,6 +330,14 @@ paths:
       summary: "Fetch info on an existing election by ID"
       description: ""
       operationId: "getElection"
+      parameters:
+        - in: query
+          name: "full"
+          description: "Indicates whether to include child objects (true) or just top-level summary info (false)."
+          required: false
+          schema:
+            type: "boolean"
+            default: false
       responses:
         200:
           description: OK
@@ -993,6 +1008,8 @@ paths:
                         type: "array"
                         items:
                           $ref: '#/components/schemas/Person'
+      x-amazon-apigateway-integration:
+        $ref: '#/components/x-amazon-apigateway-integrations/get-persons'
     post:
       tags:
         - "person"

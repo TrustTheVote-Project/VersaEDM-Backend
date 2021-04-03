@@ -1,0 +1,5 @@
+#! /bin/bash
+
+terraform workspace select dev
+terraform init
+terraform $1 -var-file dev.tfvars
