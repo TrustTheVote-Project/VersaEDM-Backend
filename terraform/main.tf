@@ -16,10 +16,6 @@ variable "env" {
   type = string
 }
 
-variable "db_creds_secret_name" {
-  type = string
-}
-
 # Configure the AWS Provider
 provider "aws" {
   region = var.region
@@ -31,11 +27,8 @@ module "network" {
 }
 module "db" {
   source = "./db"
-  db_creds_secret_name = var.db_creds_secret_name
   region = var.region
   env = var.env
-  vpc_id = module.network.vpc.id
-  ingress_cidr = module.network.vpc.cidr_block
 }
 
 module "gateway" {
