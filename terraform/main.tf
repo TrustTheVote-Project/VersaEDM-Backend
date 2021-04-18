@@ -22,6 +22,10 @@ provider "aws" {
 }
 
 # Modules
+module "pipeline" {
+  source = "./pipeline"
+}
+
 module "network" {
   source = "./network"
 }
