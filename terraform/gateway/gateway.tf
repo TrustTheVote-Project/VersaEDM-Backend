@@ -6,7 +6,7 @@ locals {
   schema_version        = local.schema_yml.info.version
 }
 
-variable "prefix" {
+variable "env" {
   type = string
 }
 
@@ -15,7 +15,7 @@ data "local_file" "openapi_spec" {
 }
 
 resource "aws_iam_role" "cloudwatch_role" {
-  name = "cloudwatch_role_${var.prefix}"
+  name = "cloudwatch_role_${var.env}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -54,7 +54,7 @@ resource "aws_iam_role" "cloudwatch_role" {
 }
 
 resource "aws_cloudwatch_log_group" "api_gateway_log_group" {
-  name              = "api_gateway_log_group_${var.prefix}"
+  name              = "api_gateway_log_group_${var.env}"
   retention_in_days = 180
 }
 
@@ -63,7 +63,7 @@ resource "aws_api_gateway_account" "api_gateway_account" {
 }
 
 resource "aws_apigatewayv2_api" "api_gateway" {
-  name          = "${local.schema_name}_${var.prefix}"
+  name          = "${local.schema_name}_${var.env}"
   description   = local.schema_description
   protocol_type = "HTTP"
   body          = local.api_schema
@@ -72,7 +72,7 @@ resource "aws_apigatewayv2_api" "api_gateway" {
 
 resource "aws_apigatewayv2_stage" "stage" {
   api_id        = aws_apigatewayv2_api.api_gateway.id
-  name          = var.prefix
+  name          = var.env
   auto_deploy   = false
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gateway_log_group.arn

@@ -1,3 +1,3 @@
 region = "us-east-2"
-prefix = "prod"
+env = "prod"
 db_creds_secret_name = "aurora-admin-creds-prod"

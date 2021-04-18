@@ -12,7 +12,7 @@ variable "region" {
   type = string
 }
 
-variable "prefix" {
+variable "env" {
   type = string
 }
 
@@ -26,14 +26,19 @@ provider "aws" {
 }
 
 # Modules
+module "network" {
+  source = "./network"
+}
 module "db" {
   source = "./db"
   db_creds_secret_name = var.db_creds_secret_name
   region = var.region
-  prefix = var.prefix
+  env = var.env
+  vpc_id = module.network.vpc.id
+  ingress_cidr = module.network.vpc.cidr_block
 }
 
 module "gateway" {
   source="./gateway"
-  prefix = var.prefix
+  env = var.env
 }
