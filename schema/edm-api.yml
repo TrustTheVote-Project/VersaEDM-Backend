@@ -1290,7 +1290,7 @@ components:
     AnnotatedString:
       type: "object"
       description: >
-        Used as a type for character strings; it adds a 16-character annotation
+        Used as a type for character strings; it adds a 32-character annotation
         to a character string.
       required:
         - "@type"
@@ -1313,7 +1313,7 @@ components:
       type: "object"
       description: >
         Used as a type for character strings that represent Uniform Resource
-        Identifiers (URI); it adds a 16-character annotation to a
+        Identifiers (URI); it adds a 32-character annotation to a
         character string.
       required:
         - "@type"
@@ -1340,10 +1340,21 @@ components:
       type: "object"
       description: Common properties for an outbound API response.
       required:
-        - type
-        - referenceId
-        - changeId
+        - errors
+        - _refId
+        - _changeId
       properties:
+        _changeId:
+          type: "string"
+          description: >
+            An opaque fingerprint representing the state of the system after the request has been made.
+        _refId:
+          type: "string"
+          description: >
+            Uniquely identifies the request-handling execution that produced
+            this response, for troubleshooting/auditing. This id is included in
+            any service-side logs associated with the request/response.
+          format: "uuid"
         errors:
           type: "array"
           description: >
@@ -1353,6 +1364,9 @@ components:
             type: "object"
             description: >
               Structured information on the nature and cause of an error.
+            required:
+              - code
+              - message
             properties:
               code:
                 type: "string"
@@ -1360,13 +1374,6 @@ components:
               message:
                 type: "string"
                 description: Human-friendly explanation of the error.
-        _refId:
-          type: "string"
-          description: >
-            Uniquely identifies the request-handling execution that produced
-            this response, for troubleshooting/auditing. This id is included in
-            any service-side logs associated with the request/response.
-          format: "uuid"
     ApiResponsePaginated:
       allOf:
         - $ref: '#/components/schemas/ApiResponse'

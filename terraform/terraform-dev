@@ -1,4 +1,6 @@
 #! /bin/bash
+export GITHUB_TOKEN=$TF_VAR_github_token
+export GITHUB_OWNER=TrustTheVote-Project
 
 terraform workspace select dev
 terraform init
