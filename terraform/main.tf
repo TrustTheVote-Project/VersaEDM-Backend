@@ -33,6 +33,14 @@ variable "github_token" {
   type = string
 }
 
+variable "github_project" {
+  type = string
+}
+
+variable "github_repo" {
+  type = string
+}
+
 # Configure the AWS Provider
 provider "aws" {
   region = var.region
@@ -41,13 +49,16 @@ provider "aws" {
 # Configure the GitHub Provider
 provider "github" {
   token = var.github_token
-  owner = "TrustTheVote-Project"
+  owner = var.github_project
 }
 
 # Modules
 module "pipeline" {
   source = "./modules/pipeline"
   vpc_id = module.network.vpc.id
+  github_token = var.github_token
+  repository_owner = var.github_project
+  repository_name = var.github_repo
 }
 
 module "network" {
@@ -66,5 +77,8 @@ module "gateway" {
 
 module "github" {
   source="./modules/github"
-  webhook_url = module.pipeline.gateway_url
+  webhook_url = module.pipeline.webhook_url
+  github_project = var.github_project
+  github_repo_name = var.github_repo
+  github_token = var.github_token
 }

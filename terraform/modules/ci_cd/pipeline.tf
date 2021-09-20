@@ -4,48 +4,12 @@ data "template_file" "buildspec" {
   }
 }
 
-variable "github_token" {
-  type = string
-}
-
-variable "repository_owner" {
-  type = string
-}
-
-variable "repository_name" {
-  type = string
-}
-
-resource "aws_codepipeline_webhook" "pipeline_webhook" {
-  authentication = "GITHUB_HMAC"
-  name = "codepipeline-webhook"
-  target_action = "Source"
-  target_pipeline = aws_codepipeline.build_pipeline.name
-
-  authentication_configuration {
-    secret_token = var.github_token
-  }
-
-  filter {
-    json_path = "$.ref"
-    match_equals = "refs/heads/main"
-  }
-}
-
 resource "aws_ecr_repository" "build_pipeline_repo" {
   name = "versaedm_build_pipeline_repo"
   image_tag_mutability = "IMMUTABLE"
   image_scanning_configuration {
     scan_on_push = true
   }
-}
-
-output "webhook_url" {
-  value = aws_codepipeline_webhook.pipeline_webhook.url
-}
-
-output "github_secret" {
-  value = aws_codepipeline_webhook.pipeline_webhook.authentication_configuration[0].secret_token
 }
 
 resource "aws_iam_role" "codepipeline_role" {
@@ -121,18 +85,17 @@ resource "aws_codepipeline" "build_pipeline" {
     action {
       category = "Source"
       name = "Source"
-      owner = "ThirdParty"
-      provider = "GitHub"
+      owner = "AWS"
+      provider = "CodeStarSourceConnection"
       input_artifacts = []
       output_artifacts = ["source_artifact"]
       run_order = 1
       version = "1"
 
       configuration = {
-        "Branch" = "main"
-        "Owner" = var.repository_owner
-        "Repo" = var.repository_name
-        "PollForSourceChanges" = false
+        ConnectionArn = aws_codestarconnections_connection.github.arn
+        FullRepositoryId = "${var.github_project}/${var.github_repo_name}"
+        BranchName = "main"
       }
     }
   }

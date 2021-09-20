@@ -1,19 +1,3 @@
-variable "webhook_url" {
-  type = string
-}
-
-variable "github_token" {
-  type = string
-}
-
-variable "github_project" {
-  type = string
-}
-
-variable "github_repo_name" {
-  type = string
-}
-
 data "github_repository" "versaedm_backend_repo" {
   full_name = "${var.github_project}/${var.github_repo_name}"
 }

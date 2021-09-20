@@ -1,0 +1,27 @@
+version: 0.2
+
+env:
+  variables:
+
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    # commands:
+    #  - there are no commands
+  pre_build:
+    commands:
+      - pip install -r requirements.txt
+      - pip install -e .
+  build:
+    commands:
+
+artifacts:
+  files:
+    - "**/*"
+  name: "web-dist"
+  base-directory: build
+
+cache:
+  paths:
