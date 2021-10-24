@@ -29,7 +29,11 @@ variable "env" {
   type = string
 }
 
-variable "github_token" {
+variable "github_webhook_token" {
+  type = string
+}
+
+variable "github_clone_token" {
   type = string
 }
 
@@ -48,15 +52,24 @@ provider "aws" {
 
 # Configure the GitHub Provider
 provider "github" {
-  token = var.github_token
+  token = var.github_webhook_token
   owner = var.github_project
 }
 
 # Modules
+#module "ci_cd" {
+#  source = "./modules/ci_cd"
+#  github_token = var.github_webhook_token
+#
+#  github_project   = var.github_project
+#  github_repo_name = var.github_repo
+#}
+
 module "pipeline" {
   source = "./modules/pipeline"
   vpc_id = module.network.vpc.id
-  github_token = var.github_token
+  github_webhook_token = var.github_webhook_token
+  github_clone_token = var.github_clone_token
   repository_owner = var.github_project
   repository_name = var.github_repo
 }
@@ -80,5 +93,5 @@ module "github" {
   webhook_url = module.pipeline.webhook_url
   github_project = var.github_project
   github_repo_name = var.github_repo
-  github_token = var.github_token
+  github_webhook_token = var.github_webhook_token
 }

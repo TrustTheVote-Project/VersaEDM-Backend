@@ -4,7 +4,11 @@ data "template_file" "buildspec" {
   }
 }
 
-variable "github_token" {
+variable "github_webhook_token" {
+  type = string
+}
+
+variable "github_clone_token" {
   type = string
 }
 
@@ -23,7 +27,7 @@ resource "aws_codepipeline_webhook" "pipeline_webhook" {
   target_pipeline = aws_codepipeline.build_pipeline.name
 
   authentication_configuration {
-    secret_token = var.github_token
+    secret_token = var.github_webhook_token
   }
 
   filter {
@@ -133,6 +137,7 @@ resource "aws_codepipeline" "build_pipeline" {
         "Owner" = var.repository_owner
         "Repo" = var.repository_name
         "PollForSourceChanges" = false
+        "OAuthToken" = var.github_clone_token
       }
     }
   }
@@ -148,7 +153,7 @@ resource "aws_codepipeline" "build_pipeline" {
       input_artifacts = ["source_artifact"]
       output_artifacts = ["build_artifact"]
       configuration = {
-        "ProjectName" = "versaedm-backend-source"
+        "ProjectName" = "versaedm-backend-build"
       }
     }
   }
@@ -171,14 +176,46 @@ resource aws_iam_role "build_phase_role" {
   assume_role_policy = data.aws_iam_policy_document.codebuild_trust.json
 }
 
+resource aws_iam_role_policy "build_phase_role_policy" {
+  role = aws_iam_role.build_phase_role.name
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Resource": [
+        "*"
+      ],
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.codepipeline_bucket.arn}",
+        "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+      ]
+    }
+  ]
+}
+POLICY
+}
+
 resource aws_cloudwatch_log_group "pipeline_log_group" {
   name = "/versaedm-backend/build-pipelines"
   retention_in_days = 60
 }
 
-resource aws_codebuild_project "source_phase" {
-  name = "versaedm-backend-source"
-  description = "Source phase for build pipeline"
+resource aws_codebuild_project "build-phase" {
+  name = "versaedm-backend-build"
+  description = "Build phase for build pipeline"
   badge_enabled = false
   build_timeout = 60
   queued_timeout = 480
@@ -195,7 +232,7 @@ resource aws_codebuild_project "source_phase" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image = "Ubuntu standard:5.0"
+    image = "aws/codebuild/standard:5.0"
     image_pull_credentials_type = "CODEBUILD"
     type = "LINUX_CONTAINER"
     privileged_mode = false
@@ -204,7 +241,7 @@ resource aws_codebuild_project "source_phase" {
   logs_config {
     cloudwatch_logs {
       group_name = aws_cloudwatch_log_group.pipeline_log_group.name
-      stream_name = "source"
+      stream_name = "build"
     }
   }
 

@@ -1,7 +1,7 @@
 version: 0.2
 
 env:
-  variables:
+  variables: []
 
 
 phases:
@@ -15,7 +15,7 @@ phases:
       - pip install -r requirements.txt
       - pip install -e .
   build:
-    commands:
+    commands: []
 
 artifacts:
   files:
@@ -24,4 +24,4 @@ artifacts:
   base-directory: build
 
 cache:
-  paths:
+  paths: []

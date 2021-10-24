@@ -2,7 +2,7 @@ variable "webhook_url" {
   type = string
 }
 
-variable "github_token" {
+variable "github_webhook_token" {
   type = string
 }
 
@@ -27,6 +27,6 @@ resource "github_repository_webhook" "push_webhook" {
     url = var.webhook_url
     insecure_ssl = "0"
     content_type = "json"
-    secret = var.github_token
+    secret = var.github_webhook_token
   }
 }
