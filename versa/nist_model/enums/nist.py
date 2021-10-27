@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class BallotMeasureContestTypeEnum(Enum):
+class BallotMeasureContestTypeEnum(str, Enum):
     ballot_measure = 'ballot-measure'
     initiative = 'initiative'
     recall = 'recall'
@@ -9,7 +9,17 @@ class BallotMeasureContestTypeEnum(Enum):
     other = 'other'
 
 
-class PostElectionStatusEnum(Enum):
+class ElectionTypeEnum(str, Enum):
+    general = 'general'
+    partisan_primary_closed = 'partisan-primary-closed'
+    partisan_primary_open = 'partisan-primary-open'
+    primary = 'primary'
+    runoff = 'runoff'
+    special = 'special'
+    other = 'other'
+
+
+class PostElectionStatusEnum(str, Enum):
     advanced_to_runoff = 'advanced-to-runoff'
     defeated = 'defeated'
     projected_winner = 'projected-winner'
@@ -17,10 +27,15 @@ class PostElectionStatusEnum(Enum):
     withdrawn = 'withdrawn'
 
 
-class PreElectionStatusEnum(Enum):
+class PreElectionStatusEnum(str, Enum):
     filed = 'filed'
     qualified = 'qualified'
     withdrawn = 'withdrawn'
+
+
+class ReportDetailLevelEnum(str, Enum):
+    precinct_level = 'precinct-level'
+    summary_contest = 'summary-contest'
 
 
 class ReportingUnitTypeEnum(str, Enum):
@@ -55,7 +70,16 @@ class ReportingUnitTypeEnum(str, Enum):
     other = 'other'
 
 
-class VoteVariationEnum(Enum):
+class ResultsStatusEnum(str, Enum):
+    certified = 'certified'
+    correction = 'correction'
+    pre_election = 'pre-election'
+    recount = 'recount'
+    unofficial_complete = 'unofficial-complete'
+    unofficial_partial = 'unofficial-partial'
+
+
+class VoteVariationEnum(str, Enum):
     one_of_m = '1-of-m'
     approval = 'approval'
     borda = 'borda'

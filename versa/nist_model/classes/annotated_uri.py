@@ -1,5 +1,6 @@
-from pydantic import AnyUrl, BaseModel, Field
 from typing import Literal, Optional
+
+from pydantic import AnyUrl, BaseModel, Field
 
 from versa.nist_model.enums.type_tag import TypeTags
 from versa.nist_model.util import fieldname_alias

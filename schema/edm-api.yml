@@ -653,6 +653,32 @@ paths:
                         $ref: '#/components/schemas/ElectionReport'
         404:
           description: "Identified election report does not exist."
+  /election-reports/election/{electionId}:
+    parameters:
+      - in: path
+        name: "electionId"
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - election-report
+      summary: "Get an election report for a given election"
+      operationId: "getElectionReportForElection"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ElectionReport'
+        404:
+          description: "Identified election does not exist."
   /headers:
     get:
       tags:
@@ -1008,8 +1034,6 @@ paths:
                         type: "array"
                         items:
                           $ref: '#/components/schemas/Person'
-      x-amazon-apigateway-integration:
-        $ref: '#/components/x-amazon-apigateway-integrations/get-persons'
     post:
       tags:
         - "person"

@@ -2,9 +2,9 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
+from .intl_text import InternationalizedText
 from ..enums.type_tag import TypeTags
 from ..util import fieldname_alias, ObjectIdRef
-from .intl_text import InternationalizedText
 
 
 class BallotMeasureSelection(BaseModel):

@@ -4,10 +4,10 @@ from pydantic import BaseModel, Field
 
 from .annotated_uri import AnnotatedUri
 from .contest_selection import BallotMeasureSelection, CandidateSelection
+from .intl_text import InternationalizedText
 from ..enums.nist import VoteVariationEnum, BallotMeasureContestTypeEnum
 from ..enums.type_tag import TypeTags
 from ..util import fieldname_alias, ObjectId, ObjectIdRef
-from .intl_text import InternationalizedText
 
 
 class BallotMeasureContest(BaseModel):
