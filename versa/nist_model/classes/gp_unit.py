@@ -14,7 +14,7 @@ class ReportingUnit(BaseModel):
     composing_gp_unit_ids: List[ObjectIdRef] = []
     is_districted: bool = False
     is_mail_only: bool = False
-    name: str
+    name: Optional[str]
     reporting_unit_type: ReportingUnitTypeEnum = Field(..., alias='Type')
     other_type: Optional[str]
 

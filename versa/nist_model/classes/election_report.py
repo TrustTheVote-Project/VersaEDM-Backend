@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
@@ -17,7 +17,7 @@ class ElectionReport(BaseModel):
     _type: Literal[TypeTags.ElectionReportTag] = Field(TypeTags.ElectionReportTag)
     election: List[Election] = []
     format: ReportDetailLevelEnum
-    generated_date: date
+    generated_date: datetime
     gp_unit: List[Union[ReportingUnit]] = []
     is_test: bool = False
     issuer: str
