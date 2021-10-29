@@ -19,6 +19,15 @@ class ElectionTypeEnum(str, Enum):
     other = 'other'
 
 
+class ExternalIdentifierType(str, Enum):
+    fips = 'fips'
+    local_level = 'local-level'
+    national_level = 'national-level'
+    ocd_id = 'ocd-id'
+    state_level = 'state-level'
+    other = 'other'
+
+
 class PostElectionStatusEnum(str, Enum):
     advanced_to_runoff = 'advanced-to-runoff'
     defeated = 'defeated'

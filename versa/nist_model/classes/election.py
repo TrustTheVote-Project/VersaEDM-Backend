@@ -13,7 +13,8 @@ from ..util import fieldname_alias, ObjectIdRef
 
 
 class Election(BaseModel):
-    _type: Literal[TypeTags.ElectionTag] = Field(TypeTags.ElectionTag)
+    obj_type: Literal[TypeTags.ElectionTag] = Field(TypeTags.ElectionTag)
+
     ballot_style: List[BallotStyle] = []
     candidate: List[Candidate] = []
     contest: List[Union[BallotMeasureContest, CandidateContest]] = []

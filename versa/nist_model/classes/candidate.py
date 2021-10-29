@@ -9,8 +9,9 @@ from ..util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class Candidate(BaseModel):
-    _type: Literal[TypeTags.CandidateTag] = Field(TypeTags.CandidateTag)
-    _id: ObjectId
+    obj_type: Literal[TypeTags.CandidateTag] = Field(TypeTags.CandidateTag)
+    obj_id: ObjectId
+
     ballot_name: InternationalizedText
     campaign_slogan: Optional[InternationalizedText]
     is_incumbent: bool = False

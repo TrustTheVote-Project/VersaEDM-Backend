@@ -8,8 +8,9 @@ from ..util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class Office(BaseModel):
-    _type: Literal[TypeTags.OfficeTag] = Field(TypeTags.OfficeTag)
-    _id: ObjectId
+    obj_type: Literal[TypeTags.OfficeTag] = Field(TypeTags.OfficeTag)
+    obj_id: ObjectId
+
     election_district_id: Optional[ObjectIdRef]
     is_partisan: bool = True
     name: InternationalizedText

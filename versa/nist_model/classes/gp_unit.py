@@ -8,8 +8,9 @@ from ..util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class ReportingUnit(BaseModel):
-    _type: Literal[TypeTags.ReportingUnitTag] = Field(TypeTags.ReportingUnitTag)
-    _id: ObjectId
+    obj_type: Literal[TypeTags.ReportingUnitTag] = Field(TypeTags.ReportingUnitTag)
+    obj_id: ObjectId
+
     authority_ids: List[ObjectIdRef] = []
     composing_gp_unit_ids: List[ObjectIdRef] = []
     is_districted: bool = False

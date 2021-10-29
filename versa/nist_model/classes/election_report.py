@@ -14,7 +14,8 @@ from ..util import fieldname_alias
 
 
 class ElectionReport(BaseModel):
-    _type: Literal[TypeTags.ElectionReportTag] = Field(TypeTags.ElectionReportTag)
+    obj_type: Literal[TypeTags.ElectionReportTag] = Field(TypeTags.ElectionReportTag)
+
     election: List[Election] = []
     format: ReportDetailLevelEnum
     generated_date: datetime

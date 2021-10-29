@@ -8,8 +8,9 @@ from ..util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class Person(BaseModel):
-    _type: Literal[TypeTags.PersonTag] = Field(TypeTags.PersonTag)
-    _id: ObjectId
+    obj_type: Literal[TypeTags.PersonTag] = Field(TypeTags.PersonTag)
+    obj_id: ObjectId
+
     first_name: Optional[str]
     full_name: Optional[InternationalizedText]
     last_name: Optional[str]

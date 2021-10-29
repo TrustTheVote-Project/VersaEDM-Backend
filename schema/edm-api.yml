@@ -363,7 +363,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/ApiResponse'
+                - $ref: '#/components/schemas/ApiRequest'
                 - type: "object"
                   required:
                     - "data"
@@ -795,7 +795,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/ApiResponse'
+                - $ref: '#/components/schemas/ApiRequest'
                 - type: "object"
                   required:
                     - "data"
@@ -917,7 +917,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/ApiResponse'
+                - $ref: '#/components/schemas/ApiRequest'
                 - type: "object"
                   required:
                     - "data"
@@ -1045,7 +1045,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/ApiResponse'
+                - $ref: '#/components/schemas/ApiRequest'
                 - type: "object"
                   required:
                     - "data"
@@ -1360,6 +1360,13 @@ components:
     ApiRequest:
       type: "object"
       description: Common properties for an incoming API request.
+      properties:
+        _refId:
+          type: "string"
+          description: >
+            Optional client-supplied request ID used for logging/tracing/auditing. Only UUIDs are accepted,
+            in order to avoid vulnerabilities from less-constrained input.
+          format: "uuid"
     ApiResponse:
       type: "object"
       description: Common properties for an outbound API response.

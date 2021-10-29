@@ -12,6 +12,7 @@ class TypeTags(str, Enum):
     CandidateSelectionTag = 'ElectionResults.CandidateSelection'
     ElectionTag = 'ElectionResults.Election'
     ElectionReportTag = 'ElectionResults.ElectionReport'
+    ExternalIdentifierTag = 'ElectionResults.ExternalIdentifier'
     InternationalizedTextTag = 'ElectionResults.InternationalizedText'
     LanguageStringTag = 'ElectionResults.LanguageString'
     OfficeTag = 'ElectionResults.Office'

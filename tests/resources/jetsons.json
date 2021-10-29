@@ -292,7 +292,7 @@
           "@id": "con_Ballot_Measure_1",
           "ContestSelection": [
             {
-              "@type": "ElectionResults.BallotMeasureContestSelection",
+              "@type": "ElectionResults.BallotMeasureSelection",
               "@id": "sel_Ballot_Measure_1_yes",
               "Selection": {
                 "@type": "ElectionResults.InternationalizedText",
@@ -307,7 +307,7 @@
               "SequenceOrder": 1
             },
             {
-              "@type": "ElectionResults.BallotMeasureContestSelection",
+              "@type": "ElectionResults.BallotMeasureSelection",
               "@id": "sel_Ballot_Measure_1_no",
               "Selection": {
                 "@type": "ElectionResults.InternationalizedText",

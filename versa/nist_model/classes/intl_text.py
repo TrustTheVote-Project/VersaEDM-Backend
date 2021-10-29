@@ -7,7 +7,8 @@ from ..util import fieldname_alias
 
 
 class LanguageString(BaseModel):
-    _type: Literal[TypeTags.LanguageStringTag] = Field(TypeTags.LanguageStringTag)
+    obj_type: Literal[TypeTags.LanguageStringTag] = Field(TypeTags.LanguageStringTag)
+
     content: str
     language: str
 
@@ -16,7 +17,8 @@ class LanguageString(BaseModel):
 
 
 class InternationalizedText(BaseModel):
-    _type: Literal[TypeTags.InternationalizedTextTag] = Field(TypeTags.InternationalizedTextTag)
+    obj_type: Literal[TypeTags.InternationalizedTextTag] = Field(TypeTags.InternationalizedTextTag)
+
     text: List[LanguageString] = Field(..., min_items=1)
 
     class Config:

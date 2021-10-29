@@ -10,7 +10,8 @@ class AnnotatedString(BaseModel):
     class Config:
         alias_generator = fieldname_alias
 
-    _type: Literal[TypeTags.AnnotatedStringTag] = Field(TypeTags.AnnotatedStringTag)
+    obj_type: Literal[TypeTags.AnnotatedStringTag] = Field(TypeTags.AnnotatedStringTag)
+
     content: str
     annotation: Optional[str] = Field(
         None,

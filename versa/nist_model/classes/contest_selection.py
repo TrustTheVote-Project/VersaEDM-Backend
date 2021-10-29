@@ -8,7 +8,8 @@ from ..util import fieldname_alias, ObjectIdRef
 
 
 class BallotMeasureSelection(BaseModel):
-    _type: Literal[TypeTags.BallotMeasureSelectionTag] = Field(TypeTags.BallotMeasureSelectionTag)
+    obj_type: Literal[TypeTags.BallotMeasureSelectionTag] = Field(TypeTags.BallotMeasureSelectionTag)
+
     selection: InternationalizedText
     sequence_order: Optional[int]
 
@@ -17,7 +18,8 @@ class BallotMeasureSelection(BaseModel):
 
 
 class CandidateSelection(BaseModel):
-    _type: Literal[TypeTags.CandidateSelectionTag] = Field(TypeTags.CandidateSelectionTag)
+    obj_type: Literal[TypeTags.CandidateSelectionTag] = Field(TypeTags.CandidateSelectionTag)
+
     candidate_ids: List[ObjectIdRef]
     endorsement_party_ids: List[ObjectIdRef] = []
     is_write_in: bool = False

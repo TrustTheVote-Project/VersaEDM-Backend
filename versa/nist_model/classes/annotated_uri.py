@@ -10,7 +10,8 @@ class AnnotatedUri(BaseModel):
     class Config:
         alias_generator = fieldname_alias
 
-    _type: Literal[TypeTags.AnnotatedUriTag] = Field(TypeTags.AnnotatedUriTag)
+    obj_type: Literal[TypeTags.AnnotatedUriTag] = Field(TypeTags.AnnotatedUriTag)
+
     content: AnyUrl
     annotation: Optional[str] = Field(
         None,

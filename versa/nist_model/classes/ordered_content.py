@@ -7,7 +7,8 @@ from ..util import fieldname_alias, ObjectIdRef
 
 
 class OrderedContest(BaseModel):
-    _type: Literal[TypeTags.OrderedContestTag] = Field(TypeTags.OrderedContestTag)
+    obj_type: Literal[TypeTags.OrderedContestTag] = Field(TypeTags.OrderedContestTag)
+
     contest_id: ObjectIdRef
     ordered_contest_selection_ids: List[ObjectIdRef] = []
 
@@ -16,6 +17,7 @@ class OrderedContest(BaseModel):
 
 
 class OrderedHeader(BaseModel):
-    _type: Literal[TypeTags.OrderedHeaderTag] = Field(TypeTags.OrderedHeaderTag)
+    obj_type: Literal[TypeTags.OrderedHeaderTag] = Field(TypeTags.OrderedHeaderTag)
+
     header_id: ObjectIdRef
     ordered_content: List[Union[OrderedContest, 'OrderedHeader']] = []

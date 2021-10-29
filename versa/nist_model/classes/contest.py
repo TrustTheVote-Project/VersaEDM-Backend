@@ -11,8 +11,9 @@ from ..util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class BallotMeasureContest(BaseModel):
-    _type: Literal[TypeTags.BallotMeasureContestTag] = Field(TypeTags.BallotMeasureContestTag)
-    _id: ObjectId
+    obj_type: Literal[TypeTags.BallotMeasureContestTag] = Field(TypeTags.BallotMeasureContestTag)
+    obj_id: ObjectId
+
     abbreviation: Optional[str]
     ballot_sub_title: Optional[InternationalizedText]
     ballot_title: Optional[InternationalizedText]
@@ -38,8 +39,9 @@ class BallotMeasureContest(BaseModel):
 
 
 class CandidateContest(BaseModel):
-    _type: Literal[TypeTags.CandidateContestTag] = Field(TypeTags.CandidateContestTag)
-    _id: ObjectId
+    obj_type: Literal[TypeTags.CandidateContestTag] = Field(TypeTags.CandidateContestTag)
+    obj_id: ObjectId
+
     abbreviation: Optional[str]
     ballot_sub_title: Optional[InternationalizedText]
     ballot_title: Optional[InternationalizedText]
