@@ -14,8 +14,9 @@ def create_router(app_state: InMemoryDb):
     router = APIRouter()
 
     @router.post('/parties')
-    def create_party(req: ApiRequest[Party]):
-        app_state.parties.put(req.data)
+    def create_party(req: ApiRequest[Party]) -> str:
+        party_id = app_state.parties.put(req.data)
+        return party_id
 
     @router.get('/parties')
     def get_parties() -> ApiResponse[List[Party]]:

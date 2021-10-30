@@ -9,8 +9,9 @@ def fieldname_alias(python_fieldname: str) -> str:
 
 
 class ObjectId(BaseModel):
-    __root__: constr(regex=r'[A-Za-z_][A-Za-z0-9._-]*', min_length=1) = Field(
-        ..., description='An xsi:idref datatype'
+    __root__: constr(regex=r'([A-Za-z_][A-Za-z0-9._-]*)?', min_length=0) = Field(
+        ..., description='An xsi:idref datatype. The empty string is permitted for this API, and indicates that '
+        'the object does not yet have a referential identity (e.g., a client wishes to get an ID for the object).'
     )
 
     def __str__(self):
