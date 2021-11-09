@@ -40,6 +40,16 @@ class EntityStore:
             self.by_external_id[(self._external_id_type_key(external_id), external_id.value)] = obj_id
         return obj_id if is_new else None
 
+    def delete(self, obj_id: str) -> bool:
+        try:
+            obj = self.get(obj_id)
+            for external_id in getattr(obj, 'external_identifier', []):
+                del(self.by_external_id[(self._external_id_type_key(external_id), external_id.value)])
+            del(self.by_id[obj_id])
+            return True
+        except:
+            return False
+
     def values(self) -> List[Any]:
         return list(self.by_id.values())
 

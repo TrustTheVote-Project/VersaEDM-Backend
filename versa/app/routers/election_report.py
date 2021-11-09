@@ -1,4 +1,10 @@
 from fastapi import APIRouter
 
+from versa.app.db.in_memory import InMemoryDb
 
-router = APIRouter()
+
+def create_router(app_state: InMemoryDb):
+
+    router = APIRouter()
+
+    return router

@@ -15,7 +15,7 @@ def create_router(app_state: InMemoryDb):
 
     @router.post('/parties')
     def create_party(req: ApiRequest[Party]) -> str:
-        party_id = app_state.parties.put(req.data)
+        party_id = app_state.parties.put(req.data, overwrite=False)
         return party_id
 
     @router.get('/parties')
@@ -25,5 +25,16 @@ def create_router(app_state: InMemoryDb):
             _refId=uuid4().hex,
             data=list(app_state.parties.values())
         )
+
+    @router.put('/parties/{id}')
+    def update_party(id: str, req: ApiRequest[Party]) -> str:
+        # check that the record exists before updating
+        app_state.parties.get(id)
+        party_id = app_state.parties.put(req.data, overwrite=True)
+        return party_id
+
+    @router.delete('/parties/{id}')
+    def delete_party(id: str) -> bool:
+        return app_state.parties.delete(id)
 
     return router
