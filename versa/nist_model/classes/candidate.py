@@ -1,7 +1,8 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, List
 
 from pydantic import BaseModel, Field
 
+from .external_identifier import ExternalIdentifier
 from .intl_text import InternationalizedText
 from ..enums.nist import PostElectionStatusEnum, PreElectionStatusEnum
 from ..enums.type_tag import TypeTags
@@ -14,6 +15,7 @@ class Candidate(BaseModel):
 
     ballot_name: InternationalizedText
     campaign_slogan: Optional[InternationalizedText]
+    external_identifier: List[ExternalIdentifier] = []
     is_incumbent: bool = False
     is_top_ticket: bool = False
     party: Optional[ObjectIdRef]
