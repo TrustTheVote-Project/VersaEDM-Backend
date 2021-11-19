@@ -2,6 +2,7 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
+from .external_identifier import ExternalIdentifier
 from .intl_text import InternationalizedText
 from ..enums.type_tag import TypeTags
 from ..util import fieldname_alias, ObjectIdRef
@@ -10,6 +11,7 @@ from ..util import fieldname_alias, ObjectIdRef
 class BallotMeasureSelection(BaseModel):
     obj_type: Literal[TypeTags.BallotMeasureSelectionTag] = Field(TypeTags.BallotMeasureSelectionTag)
 
+    external_identifier: List[ExternalIdentifier] = []
     selection: InternationalizedText
     sequence_order: Optional[int]
 

@@ -5,53 +5,61 @@ from versa.nist_model.enums.nist import ExternalIdentifierType
 
 
 class EntityStore:
-    by_id: Dict[str, Any] = {}
-    by_external_id: Dict[Tuple[str, str], str] = {}
-
-    @staticmethod
-    def _external_id_type_key(external_id) -> str:
-        id_type = external_id.obj_type
-        if id_type == ExternalIdentifierType.other:
-            return f'{id_type}:{external_id.other_type}'
-        else:
-            return id_type
+    def __init__(self):
+        self.id_to_obj: Dict[str, Any] = {}
+        self.id_synonyms: Dict[str, str] = {}
 
     @staticmethod
     def get_obj_id(obj: Any) -> (str, bool):
         obj_id = getattr(obj, 'obj_id', None)
-        return str(obj_id) or uuid4().hex, bool(obj_id)
+        return str(obj_id) if obj_id else uuid4().hex, not bool(obj_id)
 
-    def get(self, obj_id: str, external_id_type: str = None):
-        if external_id_type is None:
-            return self.by_id.get(obj_id)
-        else:
-            return self.get(self.by_external_id.get((external_id_type, obj_id)))
+    def by_ref(self, obj_id: str):
+        return self.id_to_obj[obj_id]
+
+    def get(self, obj_or_external_id: str):
+        return self.id_to_obj.get(self.id_synonyms.get(obj_or_external_id))
 
     def put(self, value: Any, overwrite: bool = False) -> Optional[str]:
-        obj_id, is_new = self.get_obj_id(value)
-        if hasattr(value, 'obj_id') and is_new:
-            value.obj_id = obj_id
-        external_ids = getattr(value, 'external_identifier', [])
+        obj_id, is_generated_id = self.get_obj_id(value)
+        # if we had to generate an id, see if the external identifiers resolve to a single known id
+        external_ids = {ext_id.value for ext_id in getattr(value, 'external_identifier', [])}
+        synonym_referents = {self.id_synonyms[ext_id] for ext_id in external_ids if ext_id in self.id_synonyms}
+        if is_generated_id:
+            if len(synonym_referents) > 1:
+                raise ValueError('External ids reference multiple known objects.')
+            elif len(synonym_referents) == 1:
+                obj_id = list(synonym_referents)[0]
+                is_generated_id = False
+            elif hasattr(value, 'obj_id'):
+                # the external identifiers don't resolve to a known internal id, so use the generated one
+                value.obj_id = obj_id
+        else:
+            if synonym_referents.difference({obj_id}):
+                # the external ids refer to different internal ids than this object has
+                raise ValueError('External ids reference a different existing object.')
 
-        if obj_id in self.by_id and not overwrite:
-            raise ValueError(f"Object with id {obj_id} already exists.")
-        self.by_id[obj_id] = value
+        if not overwrite and obj_id in self.id_to_obj:
+            raise ValueError('Object already exists.')
+
+        self.id_to_obj[obj_id] = value
+        self.id_synonyms[obj_id] = obj_id
         for external_id in external_ids:
-            self.by_external_id[(self._external_id_type_key(external_id), external_id.value)] = obj_id
-        return obj_id if is_new else None
+            self.id_synonyms[external_id] = obj_id
+        return obj_id if is_generated_id else None
 
     def delete(self, obj_id: str) -> bool:
         try:
             obj = self.get(obj_id)
             for external_id in getattr(obj, 'external_identifier', []):
-                del(self.by_external_id[(self._external_id_type_key(external_id), external_id.value)])
-            del(self.by_id[obj_id])
+                del(self.id_synonyms[external_id.value])
+            del(self.id_to_obj[obj_id])
             return True
         except:
             return False
 
     def values(self) -> List[Any]:
-        return list(self.by_id.values())
+        return list(self.id_to_obj.values())
 
 
 class InMemoryDb:

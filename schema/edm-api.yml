@@ -1372,14 +1372,14 @@ components:
       description: Common properties for an outbound API response.
       required:
         - errors
-        - _refId
-        - _changeId
+        - refId
+        - changeId
       properties:
-        _changeId:
+        changeId:
           type: "string"
           description: >
             An opaque fingerprint representing the state of the system after the request has been made.
-        _refId:
+        refId:
           type: "string"
           description: >
             Uniquely identifies the request-handling execution that produced

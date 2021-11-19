@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 
 from .annotated_uri import AnnotatedUri
 from .contest_selection import BallotMeasureSelection, CandidateSelection
+from .external_identifier import ExternalIdentifier
 from .intl_text import InternationalizedText
 from ..enums.nist import VoteVariationEnum, BallotMeasureContestTypeEnum
 from ..enums.type_tag import TypeTags
@@ -22,6 +23,7 @@ class BallotMeasureContest(BaseModel):
     contest_type: Optional[BallotMeasureContestTypeEnum] = Field(None, alias='Type')
     effect_of_abstain: Optional[InternationalizedText]
     election_district_id: ObjectIdRef
+    external_identifier: List[ExternalIdentifier] = []
     full_text: Optional[InternationalizedText]
     has_rotation: bool = False
     info_uri: Optional[AnnotatedUri]
@@ -47,6 +49,7 @@ class CandidateContest(BaseModel):
     ballot_title: Optional[InternationalizedText]
     contest_selection: List[CandidateSelection] = []
     election_district_id: ObjectIdRef
+    external_identifier: List[ExternalIdentifier] = []
     has_rotation: bool = False
     name: str
     number_elected: Optional[int] = Field(None, ge=0)
