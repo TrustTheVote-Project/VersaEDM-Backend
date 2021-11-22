@@ -2,6 +2,7 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
+from .external_identifier import ExternalIdentifier
 from ..enums.nist import ReportingUnitTypeEnum
 from ..enums.type_tag import TypeTags
 from ..util import fieldname_alias, ObjectId, ObjectIdRef
@@ -13,6 +14,7 @@ class ReportingUnit(BaseModel):
 
     authority_ids: List[ObjectIdRef] = []
     composing_gp_unit_ids: List[ObjectIdRef] = []
+    external_identifier: List[ExternalIdentifier] = []
     is_districted: bool = False
     is_mail_only: bool = False
     name: Optional[str]

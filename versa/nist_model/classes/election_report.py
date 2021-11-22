@@ -4,6 +4,7 @@ from typing import List, Literal, Optional, Union
 from pydantic import BaseModel, Field
 
 from .election import Election
+from .external_identifier import ExternalIdentifier
 from .gp_unit import ReportingUnit
 from .office import Office
 from .party import Party
@@ -17,6 +18,7 @@ class ElectionReport(BaseModel):
     obj_type: Literal[TypeTags.ElectionReportTag] = Field(TypeTags.ElectionReportTag)
 
     election: List[Election] = []
+    external_identifier: List[ExternalIdentifier] = []
     format: ReportDetailLevelEnum
     generated_date: datetime
     gp_unit: List[Union[ReportingUnit]] = []

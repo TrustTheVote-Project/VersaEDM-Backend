@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from .ballot_style import BallotStyle
 from .candidate import Candidate
 from .contest import BallotMeasureContest, CandidateContest
+from .external_identifier import ExternalIdentifier
 from .intl_text import InternationalizedText
 from ..enums.nist import ElectionTypeEnum
 from ..enums.type_tag import TypeTags
@@ -20,6 +21,7 @@ class Election(BaseModel):
     contest: List[Union[BallotMeasureContest, CandidateContest]] = []
     election_scope_id: ObjectIdRef
     end_date: date
+    external_identifier: List[ExternalIdentifier] = []
     name: InternationalizedText
     other_type: Optional[str]
     start_date: date
