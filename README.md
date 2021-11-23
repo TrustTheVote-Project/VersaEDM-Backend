@@ -12,11 +12,11 @@ VersaBE is part of the [ElectOS](https://electos.org/) Versa Election Data Manag
 
 ## Getting Started
 
-To run the code in this repo, you need Python 3.4 or greater installed correctly on your development workstation, as well as pip.
+To run the code in this repo, you need Python 3.4 or greater installed correctly on your development workstation, as well as `pip`.
 
 ## Set up venv
 
-This Python repo uses the built-in virtual environment, venv. To set up venv, **go to the project root directory** and enter:
+This Python repo uses the built-in virtual environment, `venv`. To set up `venv`, **go to the project root directory** and enter:
 
 ```bash
 python -m venv ./venv
@@ -24,9 +24,9 @@ python -m venv ./venv
 
 This command works on Windows, Mac and Linux (although you may need to substitute `python3` for your platform, or use the backslash for Windows).
 
-This project's `.gitignore` file already includes a line to ignore the entire `/venv/` directory.
+This project's `.gitignore` file already includes a line to ignore the entire `./venv/` directory, which is an excellent reason to use it as your virtual environment directory name.
 
-Depending on your platform, you'll need to activate your virtual environment. Note that some code editors and IDEs, like VSCode, will start the virtual environment automatically if you locate the Python interpreter in in your `venv` directory.
+Depending on your platform, you'll need to activate your virtual environment after it's created. Note that some code editors and IDEs, like VSCode, will start the virtual environment automatically if you point to the Python interpreter in in your `venv` directory.
 
 ### Windows 10 with PowerShell
 
@@ -75,7 +75,7 @@ You'll also need to install docker.
 
 ### Installing Docker in Windows 10
 
-We recommend using chocolately to install the most current version of the Docker Desktop package.
+We recommend using [chocolately](https://chocolatey.org/) to install the current version of the Docker Desktop package.
 
 ### Installing Docker in Linux
 
@@ -107,4 +107,4 @@ curl http://localhost:8080/party
 curl http://localhost:8080/parties
 ```
 
-Storage is all in-memory at this point, nothing persisted to or read from disk/DB, so for the time being, you'll need to call POST methods to put data in before getting data out.
+Storage is all in-memory at this point, nothing persists after you stop the server.  For now, you'll need to call POST methods to put data in before getting data out.
