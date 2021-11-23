@@ -1,13 +1,13 @@
 # Versa EDM Backend README
 
-The backend server for the VersaEDM-Backend, also known as **VersaBE** or, if you're in a rush, **vbe**.
+The backend server for the Versa Election Data Manager, also known as **VersaBE** or, if you're in a rush, **vbe**.
 
-VersaBE is part of the [ElectOS](https://electos.org/) Versa Election Data Manager that provides an back-end API to a web UI front-end. VersaBE also validates JSON data using pydantic. Written in Python, distributed in Docker.
+VersaBE is part of the [ElectOS](https://electos.org/) Versa Election Data Manager system that provides a back-end API to a web UI front-end. VersaBE also validates JSON data using pydantic. Written in Python, distributed in Docker.
 
 ## More Information about VersaBE
 
 * The VersaEDM-Backend software is licensed under the [OSET Public License v2](LICENSE.md)
-* Read the [NIST Special Publication 1500-100, Election Results Common Data Format Specification (Revision 2.0: PDF, 11.3MB)](docs/NIST.SP.1500-100r2.pdf) for a detailed description of the data model, or check it out on GitHub: [usnistgov/ElectionResultsReporting at version2](https://github.com/usnistgov/ElectionResultsReporting/tree/version2). VersaBE conforms to this specification.
+* Read the [NIST Special Publication 1500-100, Election Results Common Data Format Specification (Revision 2.0: PDF, 11.3MB)](docs/NIST.SP.1500-100r2.pdf) for a detailed description of the election data model this software implements, or check it out on GitHub: [usnistgov/ElectionResultsReporting at version2](https://github.com/usnistgov/ElectionResultsReporting/tree/version2). VersaBE conforms to this specification.
 * Check the `docs` folder in this repo for more helpful documentation and other useful information about this project and the data specification it implements.
 
 ## Getting Started
