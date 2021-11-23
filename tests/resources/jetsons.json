@@ -339,6 +339,13 @@
       ],
       "ElectionScopeId": "gp_Gadget_County",
       "EndDate": "2022-04-01",
+      "ExternalIdentifier": [
+        {
+          "@type": "ElectionResults.ExternalIdentifier",
+          "Type": "local-level",
+          "Value": "gc-special-2022"
+        }
+      ],
       "Name": {
         "@type": "ElectionResults.InternationalizedText",
         "Text": [
