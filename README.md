@@ -1,6 +1,14 @@
-## Versa EDM Backend README
+# Versa EDM Backend README
 
-The backend server for VersaEDM, part of the ElectOS Versa Election Data Manager, that provides an API to a web UI front-end. Also validates JSON data using pydantic. Written in Python, distributed in Docker.
+The backend server for the VersaEDM-Backend, also known as **VersaBE** or, if you're in a rush, **vbe**.
+
+VersaBE is part of the [ElectOS](https://electos.org/) Versa Election Data Manager that provides an back-end API to a web UI front-end. VersaBE also validates JSON data using pydantic. Written in Python, distributed in Docker.
+
+## More Information about VersaBE
+
+* The VersaEDM-Backend software is licensed under the [OSET Public License v2](LICENSE.md)
+* Read the [NIST Special Publication 1500-100, Election Results Common Data Format Specification (Revision 2.0: PDF, 11.3MB)](docs/NIST.SP.1500-100r2.pdf) for a detailed description of the data model, or check it out on GitHub: [usnistgov/ElectionResultsReporting at version2](https://github.com/usnistgov/ElectionResultsReporting/tree/version2). VersaBE conforms to this specification.
+* Check the `docs` folder in this repo for more helpful documentation and other useful information about this project and the data specification it implements.
 
 ## Getting Started
 
@@ -8,21 +16,23 @@ To run the code in this repo, you need Python 3.4 or greater installed correctly
 
 ## Set up venv
 
-This Python repo uses the built-in virtual environment, venv. To set up venv, go to the repo root directory and enter:
+This Python repo uses the built-in virtual environment, venv. To set up venv, **go to the project root directory** and enter:
 
-```
+```bash
 python -m venv ./venv
 ```
 
 This command works on Windows, Mac and Linux (although you may need to substitute `python3` for your platform, or use the backslash for Windows).
 
-Depending on your platform, you'll need to activate your virtual environment.
+This project's `.gitignore` file already includes a line to ignore the entire `/venv/` directory.
+
+Depending on your platform, you'll need to activate your virtual environment. Note that some code editors and IDEs, like VSCode, will start the virtual environment automatically if you locate the Python interpreter in in your `venv` directory.
 
 ### Windows 10 with PowerShell
 
 In the repo root directory, enter these commands in PowerShell:
 
-```
+```bash
 cd .\venv\Scripts\
 .\Activate.ps1
 ```
@@ -31,7 +41,7 @@ cd .\venv\Scripts\
 
 Activate your venv with this bash command entered at the root of the project folder:
 
-```
+```bash
 source ./venv/bin/activate 
 ```
 
@@ -39,7 +49,7 @@ source ./venv/bin/activate
 
 If you're using fish as your shell, you can activate venv like this:
 
-```
+```fish
 set VIRTUAL_ENV "/home/neil/repos/oset/VersaEDM-Backend/venv"
 ```
 
@@ -49,9 +59,15 @@ Once venv is active, your command line should display `(venv)` before the prompt
 
 ```bash
 pip install -r requirements.txt
+```
+
+Or, you can install the development requirements, which will also install the basic requirements.
+
+```bash
 pip install -r requirements-dev.txt
 ```
-This will ensure you've installed the correct versions of each package.
+
+Either command will ensure you've installed the correct versions of each package.
 
 ## Setup: Docker
 
@@ -68,6 +84,7 @@ Install the latest docker using snap:
 ```bash
 sudo snap install docker
 ```
+
 ### Build and Run Your Own Docker Instance
 
 Once you've installed the packages you need using venv, and have docker installed as well, you can run the app locally on port 8080 using the following Bash commands from the project root:
@@ -81,7 +98,7 @@ Note that you can skip `sudo` when running these commands in PowerShell on Windo
 
 ## Test the API
 
-Then you can run the browser app to consume the API endpoints defined in it. Currently only POST /party and GET /parties are defined. 
+Then you can run the browser app to consume the API endpoints defined in it.
 
 To test the API, you can use curl:
 
