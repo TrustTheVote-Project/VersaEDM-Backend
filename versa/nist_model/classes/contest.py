@@ -3,7 +3,9 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 
 from .annotated_uri import AnnotatedUri
-from .contest_selection import BallotMeasureSelection, CandidateSelection
+from .contest_selection import BallotMeasureSelection, CandidateSelection, PartySelection
+from .count_status import CountStatus
+from .counts import OtherCounts
 from .external_identifier import ExternalIdentifier
 from .intl_text import InternationalizedText
 from ..enums.nist import VoteVariationEnum, BallotMeasureContestTypeEnum
@@ -21,19 +23,23 @@ class BallotMeasureContest(BaseModel):
     con_statement: Optional[InternationalizedText]
     contest_selection: List[BallotMeasureSelection] = []
     contest_type: Optional[BallotMeasureContestTypeEnum] = Field(None, alias='Type')
+    count_status: List[CountStatus] = []
     effect_of_abstain: Optional[InternationalizedText]
     election_district_id: ObjectIdRef
     external_identifier: List[ExternalIdentifier] = []
     full_text: Optional[InternationalizedText]
     has_rotation: bool = False
-    info_uri: Optional[AnnotatedUri]
+    info_uri: List[AnnotatedUri] = []
     name: str
+    other_counts: List[OtherCounts] = []
     other_type: Optional[str]
     other_vote_variation: Optional[str]
     passage_threshold: Optional[InternationalizedText]
     pro_statement: Optional[InternationalizedText]
     sequence_order: Optional[int]
+    sub_units_reported: Optional[int]
     summary_text: Optional[InternationalizedText]
+    total_sub_units: Optional[int]
     vote_variation: Optional[VoteVariationEnum]
 
     class Config:
@@ -48,6 +54,7 @@ class CandidateContest(BaseModel):
     ballot_sub_title: Optional[InternationalizedText]
     ballot_title: Optional[InternationalizedText]
     contest_selection: List[CandidateSelection] = []
+    count_status: List[CountStatus] = []
     election_district_id: ObjectIdRef
     external_identifier: List[ExternalIdentifier] = []
     has_rotation: bool = False
@@ -55,11 +62,74 @@ class CandidateContest(BaseModel):
     number_elected: Optional[int] = Field(None, ge=0)
     number_runoff: Optional[int] = Field(None, ge=0)
     office_ids: List[ObjectIdRef] = []
+    other_counts: List[OtherCounts] = []
     other_vote_variation: Optional[str]
     primary_party_ids: List[ObjectIdRef] = []
     sequence_order: Optional[int]
+    sub_units_reported = Optional[int]
+    total_sub_units = Optional[int]
     vote_variation: Optional[VoteVariationEnum]
-    votes_allowed: Optional[int] = Field(None, ge=0)
+    votes_allowed: int = Field(..., ge=0)
+
+    class Config:
+        alias_generator = fieldname_alias
+
+
+class PartyContest(BaseModel):
+    obj_type: Literal[TypeTags.PartyContestTag] = Field(TypeTags.PartyContestTag)
+    obj_id: ObjectId
+
+    abbreviation: Optional[str]
+    ballot_sub_title: Optional[InternationalizedText]
+    ballot_title: Optional[InternationalizedText]
+    contest_selection: List[PartySelection] = []
+    count_status: List[CountStatus] = []
+    election_district_id: ObjectIdRef
+    external_identifier: List[ExternalIdentifier] = []
+    has_rotation: bool = False
+    name: str
+    other_counts: List[OtherCounts] = []
+    other_vote_variation: Optional[str]
+    sequence_order: Optional[int]
+    sub_units_reported = Optional[int]
+    total_sub_units = Optional[int]
+    vote_variation: Optional[VoteVariationEnum]
+
+    class Config:
+        alias_generator = fieldname_alias
+
+
+class RetentionContest(BaseModel):
+    obj_type: Literal[TypeTags.RetentionContestTag] = Field(TypeTags.RetentionContestTag)
+    obj_id: ObjectId
+
+    abbreviation: Optional[str]
+    ballot_sub_title: Optional[InternationalizedText]
+    ballot_title: Optional[InternationalizedText]
+    candidate_id: ObjectIdRef
+    con_statement: Optional[InternationalizedText]
+    contest_selection: List[CandidateSelection] = []
+    # BallotMeasureContestType is intentional here, following the NIST spec (no separate type for RetentionContest)
+    contest_type: Optional[BallotMeasureContestTypeEnum] = Field(None, alias='Type')
+    count_status: List[CountStatus] = []
+    effect_of_abstain: Optional[InternationalizedText]
+    election_district_id: ObjectIdRef
+    external_identifier: List[ExternalIdentifier] = []
+    full_text: Optional[InternationalizedText]
+    has_rotation: bool = False
+    info_uri: List[AnnotatedUri] = []
+    name: str
+    office_id: Optional[ObjectIdRef]
+    other_counts: List[OtherCounts] = []
+    other_type: Optional[str]
+    other_vote_variation: Optional[str]
+    passage_threshold: Optional[InternationalizedText]
+    pro_statement: Optional[InternationalizedText]
+    sequence_order: Optional[int]
+    sub_units_reported = Optional[int]
+    summary_text: Optional[InternationalizedText]
+    total_sub_units = Optional[int]
+    vote_variation: Optional[VoteVariationEnum]
 
     class Config:
         alias_generator = fieldname_alias
