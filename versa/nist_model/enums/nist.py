@@ -9,6 +9,51 @@ class BallotMeasureContestTypeEnum(str, Enum):
     other = 'other'
 
 
+class CountItemStatusEnum(str, Enum):
+    completed = "completed"
+    in_process = "in-process"
+    not_processed = "not-processed"
+    unknown = "unknown"
+
+
+class CountItemTypeEnum(str, Enum):
+    absentee = "absentee"
+    absentee_fwab = "absentee-fwab"
+    absentee_in_person = "absentee-in-person"
+    absentee_mail = "absentee-mail"
+    early = "early"
+    election_day = "election-day"
+    other = "other"
+    provisional = "provisional"
+    seats = "seats"
+    total = "total"
+    uocava = "uocava"
+    write_in = "write-in"
+
+
+class DayEnum(str, Enum):
+    all = "all"
+    monday = "monday"
+    tuesday = "tuesday"
+    wednesday = "wednesday"
+    thursday = "thursday"
+    friday = "friday"
+    saturday = "saturday"
+    sunday = "sunday"
+    weekday = "weekday"
+    weekend = "weekend"
+
+
+class DeviceTypeEnum(str, Enum):
+    bmd = "bmd"
+    dre = "dre"
+    manual_count = "manual-count"
+    opscan_central = "opscan-central"
+    opscan_precinct = "opscan-precinct"
+    other = "other"
+    unknown = "unknown"
+
+
 class ElectionTypeEnum(str, Enum):
     general = 'general'
     partisan_primary_closed = 'partisan-primary-closed'
