@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from .db.in_memory import InMemoryDb
-from . import routers
+from versa.app.db.in_memory import InMemoryDb
+from versa.app import routers
 
 
 def create_app() -> FastAPI:

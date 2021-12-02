@@ -3,17 +3,17 @@ from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
 
-from .ballot_style import BallotStyle
-from .candidate import Candidate
-from .contact_information import ContactInformation
-from .contest import BallotMeasureContest, CandidateContest, PartyContest, RetentionContest
-from .count_status import CountStatus
-from .counts import BallotCounts
-from .external_identifier import ExternalIdentifier
-from .intl_text import InternationalizedText
-from ..enums.nist import ElectionTypeEnum
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias, ObjectIdRef
+from versa.nist_model.classes.ballot_style import BallotStyle
+from versa.nist_model.classes.candidate import Candidate
+from versa.nist_model.classes.contact_information import ContactInformation
+from versa.nist_model.classes.contest import BallotMeasureContest, CandidateContest, PartyContest, RetentionContest
+from versa.nist_model.classes.count_status import CountStatus
+from versa.nist_model.classes.counts import BallotCounts
+from versa.nist_model.classes.external_identifier import ExternalIdentifier
+from versa.nist_model.classes.intl_text import InternationalizedText
+from versa.nist_model.enums.nist import ElectionTypeEnum
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias, ObjectIdRef
 
 
 class Election(BaseModel):

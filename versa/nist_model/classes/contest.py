@@ -2,15 +2,15 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from .annotated_uri import AnnotatedUri
-from .contest_selection import BallotMeasureSelection, CandidateSelection, PartySelection
-from .count_status import CountStatus
-from .counts import OtherCounts
-from .external_identifier import ExternalIdentifier
-from .intl_text import InternationalizedText
-from ..enums.nist import VoteVariationEnum, BallotMeasureContestTypeEnum
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias, ObjectId, ObjectIdRef
+from versa.nist_model.classes.annotated_uri import AnnotatedUri
+from versa.nist_model.classes.contest_selection import BallotMeasureSelection, CandidateSelection, PartySelection
+from versa.nist_model.classes.count_status import CountStatus
+from versa.nist_model.classes.counts import OtherCounts
+from versa.nist_model.classes.external_identifier import ExternalIdentifier
+from versa.nist_model.classes.intl_text import InternationalizedText
+from versa.nist_model.enums.nist import VoteVariationEnum, BallotMeasureContestTypeEnum
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class BallotMeasureContest(BaseModel):
@@ -66,8 +66,8 @@ class CandidateContest(BaseModel):
     other_vote_variation: Optional[str]
     primary_party_ids: List[ObjectIdRef] = []
     sequence_order: Optional[int]
-    sub_units_reported = Optional[int]
-    total_sub_units = Optional[int]
+    sub_units_reported: Optional[int]
+    total_sub_units: Optional[int]
     vote_variation: Optional[VoteVariationEnum]
     votes_allowed: int = Field(..., ge=0)
 
@@ -91,8 +91,8 @@ class PartyContest(BaseModel):
     other_counts: List[OtherCounts] = []
     other_vote_variation: Optional[str]
     sequence_order: Optional[int]
-    sub_units_reported = Optional[int]
-    total_sub_units = Optional[int]
+    sub_units_reported: Optional[int]
+    total_sub_units: Optional[int]
     vote_variation: Optional[VoteVariationEnum]
 
     class Config:
@@ -126,9 +126,9 @@ class RetentionContest(BaseModel):
     passage_threshold: Optional[InternationalizedText]
     pro_statement: Optional[InternationalizedText]
     sequence_order: Optional[int]
-    sub_units_reported = Optional[int]
+    sub_units_reported: Optional[int]
     summary_text: Optional[InternationalizedText]
-    total_sub_units = Optional[int]
+    total_sub_units: Optional[int]
     vote_variation: Optional[VoteVariationEnum]
 
     class Config:

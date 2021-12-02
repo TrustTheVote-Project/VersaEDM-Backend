@@ -1,1 +1,1 @@
-from .annotated_string import AnnotatedString
+from versa.nist_model.classes.annotated_string import AnnotatedString

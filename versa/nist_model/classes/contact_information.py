@@ -3,12 +3,12 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from . import AnnotatedString
-from .annotated_uri import AnnotatedUri
-from .intl_text import InternationalizedText
-from ..enums.nist import DayEnum
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias
+from versa.nist_model.classes import AnnotatedString
+from versa.nist_model.classes.annotated_uri import AnnotatedUri
+from versa.nist_model.classes.intl_text import InternationalizedText
+from versa.nist_model.enums.nist import DayEnum
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias
 
 
 class Hours(BaseModel):

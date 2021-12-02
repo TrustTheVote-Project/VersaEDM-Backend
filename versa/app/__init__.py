@@ -1,1 +1,1 @@
-from .app import create_app
+from versa.app.app import create_app

@@ -3,12 +3,12 @@ from typing import Literal, Optional, List
 
 from pydantic import BaseModel, Field
 
-from .contact_information import ContactInformation
-from .external_identifier import ExternalIdentifier
-from .intl_text import InternationalizedText
-from ..enums.nist import PostElectionStatusEnum, PreElectionStatusEnum
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias, ObjectId, ObjectIdRef
+from versa.nist_model.classes.contact_information import ContactInformation
+from versa.nist_model.classes.external_identifier import ExternalIdentifier
+from versa.nist_model.classes.intl_text import InternationalizedText
+from versa.nist_model.enums.nist import PostElectionStatusEnum, PreElectionStatusEnum
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class Candidate(BaseModel):
