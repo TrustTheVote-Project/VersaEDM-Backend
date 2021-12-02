@@ -1,7 +1,5 @@
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 from uuid import uuid4
-
-from versa.nist_model.enums.nist import ExternalIdentifierType
 
 
 class EntityStore:

@@ -1,4 +1,4 @@
-from typing import List, Set, Union
+from typing import List, Union
 
 from fastapi import APIRouter
 
@@ -6,7 +6,6 @@ from versa.api.api_request import ApiRequest
 from versa.app.db.in_memory import InMemoryDb
 from versa.app.routers.common import create_api_decorator
 from versa.nist_model.classes.contest import BallotMeasureContest, CandidateContest
-from versa.nist_model.enums.type_tag import TypeTags
 
 
 def create_router(app_state: InMemoryDb):

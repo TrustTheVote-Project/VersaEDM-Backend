@@ -2,10 +2,10 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from .external_identifier import ExternalIdentifier
-from ..enums.nist import ReportingUnitTypeEnum
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias, ObjectId, ObjectIdRef
+from versa.nist_model.classes.external_identifier import ExternalIdentifier
+from versa.nist_model.enums.nist import ReportingUnitTypeEnum
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias, ObjectId, ObjectIdRef
 
 
 class ReportingUnit(BaseModel):

@@ -2,8 +2,8 @@ from typing import List, Literal, Union
 
 from pydantic import BaseModel, Field
 
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias, ObjectIdRef
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias, ObjectIdRef
 
 
 class OrderedContest(BaseModel):

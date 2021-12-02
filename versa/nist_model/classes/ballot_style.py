@@ -2,11 +2,11 @@ from typing import List, Literal, Union
 
 from pydantic import BaseModel, Field
 
-from .annotated_uri import AnnotatedUri
-from .external_identifier import ExternalIdentifier
-from .ordered_content import OrderedContest, OrderedHeader
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias, ObjectIdRef
+from versa.nist_model.classes.annotated_uri import AnnotatedUri
+from versa.nist_model.classes.external_identifier import ExternalIdentifier
+from versa.nist_model.classes.ordered_content import OrderedContest, OrderedHeader
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias, ObjectIdRef
 
 
 class BallotStyle(BaseModel):

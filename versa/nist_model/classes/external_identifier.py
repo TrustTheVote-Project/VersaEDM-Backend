@@ -2,9 +2,9 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from ..enums.nist import ExternalIdentifierType
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias
+from versa.nist_model.enums.nist import ExternalIdentifierType
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias
 
 
 class ExternalIdentifier(BaseModel):

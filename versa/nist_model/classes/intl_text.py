@@ -2,8 +2,8 @@ from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
-from ..enums.type_tag import TypeTags
-from ..util import fieldname_alias
+from versa.nist_model.enums.type_tag import TypeTags
+from versa.nist_model.util import fieldname_alias
 
 
 class LanguageString(BaseModel):
