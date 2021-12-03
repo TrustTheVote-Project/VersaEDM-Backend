@@ -1,0 +1,29 @@
+[tool.poetry]
+
+name = "electos-versadm"
+version = "0.0.1"
+description = "Web service for ElectOS election data management"
+authors = ["Alan Wessman <alan@osetinstitute.org>", "Neil Johnson <neil@osetinstitute.org>"]
+packages = [
+    { include = "versadm", from = "src/electos" }
+]
+
+[tool.poetry.dependencies]
+
+python = "^3.9"
+
+# Pin to specific versions known to work together
+fastapi = "0.68.2"
+starlette = "0.14.2"
+pydantic = "1.8.2"
+uvicorn = { version = "0.15.0", extras = [ "standard" ] }
+
+[tool.poetry.dev-dependencies]
+
+# Testing
+pytest = "^6.2.5"
+coverage = "^6.2"
+tox = "^3.23.0"
+# For FastAPI TestClient
+requests = "^2.25.1"
+
