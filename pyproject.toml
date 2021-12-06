@@ -26,4 +26,5 @@ coverage = "^6.2"
 tox = "^3.23.0"
 # For FastAPI TestClient
 requests = "^2.25.1"
+black = {version = "^21.12b0", allow-prereleases = true}
 
