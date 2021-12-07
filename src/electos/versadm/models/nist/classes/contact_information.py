@@ -54,11 +54,11 @@ class ContactInformation(BaseModel):
     obj_type: Literal[TypeTags.ContactInformationTag] = Field(TypeTags.ContactInformationTag)
 
     address_line: List[str] = []
-    directions: Optional[InternationalizedText] = None
+    directions: Optional[InternationalizedText]
     email: List[AnnotatedString] = []
     fax: List[AnnotatedString] = []
-    label: Optional[str] = None
-    lat_lng: Optional[LatLng] = None
+    label: Optional[str]
+    lat_lng: Optional[LatLng]
     name: Optional[str]
     phone: List[AnnotatedString] = []
     schedule: List[Schedule] = []
