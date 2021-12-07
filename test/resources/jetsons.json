@@ -199,7 +199,7 @@
               }
             ]
           },
-          "CandidateSelection": [
+          "ContestSelection": [
             {
               "@type": "ElectionResults.CandidateSelection",
               "@id": "sel_Orbit_City_Mayoral_A",
@@ -246,7 +246,7 @@
               }
             ]
           },
-          "CandidateSelection": [
+          "ContestSelection": [
             {
               "@type": "ElectionResults.CandidateSelection",
               "@id": "sel_Spaceport_Control_Board_A",

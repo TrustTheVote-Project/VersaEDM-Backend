@@ -27,3 +27,7 @@ tox = "^3.23.0"
 # For FastAPI TestClient
 requests = "^2.25.1"
 
+[build-system]
+
+requires = ["poetry>=1.0.0"]
+build-backend = "poetry.masonry.api"

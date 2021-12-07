@@ -26,7 +26,7 @@ class CandidateSelection(BaseModel):
     obj_type: Literal[TypeTags.CandidateSelectionTag] = Field(TypeTags.CandidateSelectionTag)
     obj_id: ObjectId
 
-    candidate_ids: List[ObjectIdRef]
+    candidate_ids: List[ObjectIdRef] = []
     endorsement_party_ids: List[ObjectIdRef] = []
     is_write_in: bool = False
     sequence_order: Optional[int]

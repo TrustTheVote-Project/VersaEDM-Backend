@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from versadm.models.nist.classes.contact_information import ContactInformation
 from versadm.models.nist.classes.external_identifier import ExternalIdentifier
 from versadm.models.nist.classes.intl_text import InternationalizedText
-from versadm.models.nist.enums.nist import PostElectionStatusEnum, PreElectionStatusEnum
+from versadm.models.nist.enums.nist import CandidatePostElectionStatusEnum, CandidatePreElectionStatusEnum
 from versadm.models.nist.enums.type_tag import TypeTags
 from versadm.models.nist.util import fieldname_alias, ObjectId, ObjectIdRef
 
@@ -24,8 +24,8 @@ class Candidate(BaseModel):
     is_top_ticket: bool = False
     party_id: Optional[ObjectIdRef]
     person_id: Optional[ObjectIdRef]
-    post_election_status: Optional[PostElectionStatusEnum]
-    pre_election_status: Optional[PreElectionStatusEnum]
+    post_election_status: Optional[CandidatePostElectionStatusEnum]
+    pre_election_status: Optional[CandidatePreElectionStatusEnum]
 
     class Config:
         alias_generator = fieldname_alias

@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -19,6 +19,7 @@ class LanguageString(BaseModel):
 class InternationalizedText(BaseModel):
     obj_type: Literal[TypeTags.InternationalizedTextTag] = Field(TypeTags.InternationalizedTextTag)
 
+    label: Optional[str]
     text: List[LanguageString] = Field(..., min_items=1)
 
     class Config:

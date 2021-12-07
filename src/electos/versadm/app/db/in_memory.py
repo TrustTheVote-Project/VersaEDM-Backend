@@ -66,6 +66,7 @@ class InMemoryDb:
     candidates = EntityStore()
     contests = EntityStore()
     elections = EntityStore()
+    headers = EntityStore()
     offices = EntityStore()
     parties = EntityStore()
     persons = EntityStore()

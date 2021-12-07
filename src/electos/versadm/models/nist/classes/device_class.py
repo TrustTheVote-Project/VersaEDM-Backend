@@ -13,7 +13,7 @@ class DeviceClass(BaseModel):
     manufacturer: Optional[str]
     model: Optional[str]
     other_type: Optional[str]
-    device_class_type: DeviceTypeEnum = Field(..., alias='Type')
+    device_class_type: Optional[DeviceTypeEnum] = Field(None, alias='Type')
 
     class Config:
         alias_generator = fieldname_alias
