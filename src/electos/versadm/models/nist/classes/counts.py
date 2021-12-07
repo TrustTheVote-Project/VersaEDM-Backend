@@ -45,8 +45,6 @@ class VoteCounts(BaseModel):
     is_suppressed_for_privacy: bool = False
     other_type: Optional[str]
     round: Optional[int]
-    undervotes: Optional[float]
-    write_ins: Optional[float]
 
     class Config:
         alias_generator = fieldname_alias

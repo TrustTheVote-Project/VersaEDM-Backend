@@ -9,6 +9,20 @@ class BallotMeasureContestTypeEnum(str, Enum):
     other = 'other'
 
 
+class CandidatePostElectionStatusEnum(str, Enum):
+    advanced_to_runoff = 'advanced-to-runoff'
+    defeated = 'defeated'
+    projected_winner = 'projected-winner'
+    winner = 'winner'
+    withdrawn = 'withdrawn'
+
+
+class CandidatePreElectionStatusEnum(str, Enum):
+    filed = 'filed'
+    qualified = 'qualified'
+    withdrawn = 'withdrawn'
+
+
 class CountItemStatusEnum(str, Enum):
     completed = "completed"
     in_process = "in-process"
@@ -73,18 +87,17 @@ class ExternalIdentifierType(str, Enum):
     other = 'other'
 
 
-class PostElectionStatusEnum(str, Enum):
-    advanced_to_runoff = 'advanced-to-runoff'
-    defeated = 'defeated'
-    projected_winner = 'projected-winner'
-    winner = 'winner'
-    withdrawn = 'withdrawn'
+class GeoSpatialFormatEnum(str, Enum):
+    geo_json = "geo-json"
+    gml = "gml"
+    kml = "kml"
+    shp = "shp"
+    wkt = "wkt"
 
 
-class PreElectionStatusEnum(str, Enum):
-    filed = 'filed'
-    qualified = 'qualified'
-    withdrawn = 'withdrawn'
+class OfficeTermTypeEnum(str, Enum):
+    full_term = 'full-term'
+    unexpired_term = 'unexpired-term'
 
 
 class ReportDetailLevelEnum(str, Enum):
@@ -134,7 +147,6 @@ class ResultsStatusEnum(str, Enum):
 
 
 class VoteVariationEnum(str, Enum):
-    one_of_m = '1-of-m'
     approval = 'approval'
     borda = 'borda'
     cumulative = 'cumulative'

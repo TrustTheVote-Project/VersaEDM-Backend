@@ -11,6 +11,7 @@ def create_app() -> FastAPI:
     app.include_router(routers.candidate.create_router(app_state))
     app.include_router(routers.contest.create_router(app_state))
     app.include_router(routers.election.create_router(app_state))
+    app.include_router(routers.election_report.create_router(app_state))
     app.include_router(routers.health.router)
     app.include_router(routers.office.create_router(app_state))
     app.include_router(routers.party.create_router(app_state))
