@@ -23,15 +23,23 @@ Then, you can [set up your development environment using the poetry.lock file](h
 ```bash
 poetry install
 ```
+Once the poetry installation is complete, you may invoke your new virtual environment by entering:
+
+```bash
+poetry shell
+```
+
+Some editors or IDEs, such as VSCode, will open the poetry shell automatically if you specify the Python interpreter in the same direcory as the poetry-created virtual environment.
 
 ## Installing package releases from code
 
-For package releases of VersaDM, we use thefollowing Python tools: 
+For package releases of VersaDM, we use the following Python tools: 
 
 * `pip`
 * `venv`
 
 Once pip is installed, create your virtual environment.
+
 ### Set up venv
 
 This Python repo uses the built-in virtual environment, `venv`. To set up `venv`, **go to the project root directory** and enter:
@@ -45,6 +53,8 @@ This command works on Windows, Mac and Linux (although you may need to substitut
 This project's `.gitignore` file already includes a line to ignore the entire `./venv/` directory, which is an excellent reason to use it as your virtual environment directory name.
 
 Depending on your platform, you'll need to activate your virtual environment after it's created. Note that some code editors and IDEs, like VSCode, will start the virtual environment automatically if you point to the Python interpreter in in your `venv` directory.
+
+Generally, it's best to use only one type of virtual environment at a time, even though this repo supports multiple Python packaging tools.
 
 ### Windows 10 with PowerShell
 
