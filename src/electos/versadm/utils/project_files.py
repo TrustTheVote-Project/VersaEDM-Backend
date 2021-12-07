@@ -56,9 +56,9 @@ if __name__ == "__main__":
     print(file_defaults.root_path)
     print(file_defaults.file_found)
 
-    target_file = "writein.png"
-    target_dir = "assets/img"
-    project = "BallotLab"
+    target_file = "jetsons.json"
+    target_dir = "assets/data"
+    project = "VersaEDM-Backend"
     print(
         "Check for file {} in directory {} of project: {}".format(
             target_file, target_dir, project
