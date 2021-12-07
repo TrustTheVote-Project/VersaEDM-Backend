@@ -23,6 +23,7 @@ Then, you can [set up your development environment using the poetry.lock file](h
 ```bash
 poetry install
 ```
+
 Once the poetry installation is complete, you may invoke your new virtual environment by entering:
 
 ```bash
@@ -33,7 +34,7 @@ Some editors or IDEs, such as VSCode, will open the poetry shell automatically i
 
 ## Installing package releases from code
 
-For package releases of VersaDM, we use the following Python tools: 
+For package releases of VersaDM, we use the following Python tools:
 
 * `pip`
 * `venv`
