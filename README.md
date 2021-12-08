@@ -6,9 +6,10 @@ VersaDM is the part of [ElectOS](https://electos.org/) that provides a back-end 
 
 ## More Information about VersaDM
 
-* The VersaDM software is licensed under the [OSET Public License v2](LICENSE.md)
-* Read the [NIST Special Publication 1500-100, Election Results Common Data Format Specification (Revision 2.0: PDF, 11.3MB)](docs/NIST.SP.1500-100r2.pdf) for a detailed description of the election data model this software implements, or check it out on GitHub: [usnistgov/ElectionResultsReporting at version2](https://github.com/usnistgov/ElectionResultsReporting/tree/version2). VersaBE conforms to this specification.
-* Check the `docs` folder in this repo for more helpful documentation and other useful information about this project and the data specification it implements.
+* Check out the [RELEASE-NOTES](RELEASE-NOTES.md) for the latest technical info on VersaDM features.
+* Read the [NIST Special Publication 1500-100, Election Results Common Data Format Specification (Revision 2.0: PDF, 11.3MB)](docs/NIST.SP.1500-100r2.pdf) for a detailed description of the election data model this software implements, or check it out on GitHub: [usnistgov/ElectionResultsReporting at version2](https://github.com/usnistgov/ElectionResultsReporting/tree/version2). VersaDM conforms to this NIST specification.
+* Review the [docs](docs/) folder in this repo for more helpful documentation and other useful information about this project and the data specification it implements.
+* The VersaDM software is licensed under the [OSET Public License v2.1.1](LICENSE.md)
 
 ## Getting Started
 
@@ -18,7 +19,7 @@ To run the code in this repo, you need Python 3.9 or greater installed correctly
 
 We use [Poetry for Python dependency management and packaging](https://python-poetry.org/) for continuous development and integration work. If you're interested in working with the code in this repo, follow the instructions to [install poetry on your development workstation](https://python-poetry.org/docs/#installation).
 
-Then, you can [set up your development environment using the poetry.lock file](https://python-poetry.org/docs/basic-usage/#installing-with-poetrylock). This consists of entering the following command in the project root directory:
+Then, you can [set up your development environment with poetry](https://python-poetry.org/docs/basic-usage/). This consists of entering the following command in the project root directory:
 
 ```bash
 poetry install
@@ -39,11 +40,11 @@ For package releases of VersaDM, we use the following Python tools:
 * `pip`
 * `venv`
 
-Once pip is installed, create your virtual environment.
+First, create your virtual environment with `venv`.
 
 ### Set up venv
 
-This Python repo uses the built-in virtual environment, `venv`. To set up `venv`, **go to the project root directory** and enter:
+This Python repo supports using the virtual environment tool, `venv`, included by default with Python. To set up `venv`, **go to the project root directory** and enter:
 
 ```bash
 python -m venv ./venv
@@ -55,9 +56,9 @@ This project's `.gitignore` file already includes a line to ignore the entire `.
 
 Depending on your platform, you'll need to activate your virtual environment after it's created. Note that some code editors and IDEs, like VSCode, will start the virtual environment automatically if you point to the Python interpreter in in your `venv` directory.
 
-Generally, it's best to use only one type of virtual environment at a time, even though this repo supports multiple Python packaging tools.
+Generally, it's best to use only one type of virtual environment at a time, (for example, either `poetry` or `venv`) even though this repo supports multiple Python packaging tools.
 
-### Windows 10 with PowerShell
+#### Activating venv in Windows 10 with PowerShell
 
 In the repo root directory, enter these commands in PowerShell:
 
@@ -66,25 +67,33 @@ cd .\venv\Scripts\
 .\Activate.ps1
 ```
 
-### Linux or Mac with bash
+These commands should also work in Windows 11.
 
-Activate your venv with this bash command entered at the root of the project folder:
+#### Activating venv in Linux or Mac with bash
+
+At a bash prompt, enter this command at the root of the project folder:
 
 ```bash
 source ./venv/bin/activate 
 ```
 
-### Linux or Mac with fish
+This command will work in any bash environment, including WSL (Windows Subsystem for Linux).
 
-If you're using fish as your shell, you can activate venv like this:
+#### Activating venv in Linux or Mac with fish or other shells besides bash
+
+Venv includes activation scripts for other shells besides bash. For example, if you're using fish as your shell, you can activate venv like this:
 
 ```fish
-set VIRTUAL_ENV "/home/neil/repos/oset/VersaEDM-Backend/venv"
+set VIRTUAL_ENV "/home/myname/repos/forks/VersaEDM-Backend/venv"
 ```
+
+Note the use of an absolute path to set this environment variable; yours will of course be different.
+
+Check the contents of the `./venv/bin/activate` directory for other shell-specific activation scripts.
 
 ### Installing required packages
 
-Once venv is active, your command line should display `(venv)` before the prompt. Then, use pip to install the required Python packages:
+Once `venv` is active, your command line should display `(venv)` at the beginning of the command prompt. Installing `venv` will also install `pip` in your virtual environment, which you can then use to install the required Python packages, as follows:
 
 ```bash
 pip install -r requirements.txt
@@ -96,11 +105,11 @@ Or, you can install the development requirements, which will also install the ba
 pip install -r requirements-dev.txt
 ```
 
-Either command will ensure you've installed the correct versions of each package.
+Either command will ensure you've installed the correct versions of each required package.
 
-## Setup: Docker
+## Setup Docker
 
-You'll also need to install docker.
+To run the API, you'll also need to install Docker.
 
 ### Installing Docker in Windows 10
 
@@ -114,26 +123,57 @@ Install the latest docker using snap:
 sudo snap install docker
 ```
 
+### Installing Docker on the Mac
+
+You'll need to install a specific build of Docker on your Mac, depending on which type of CPU you have (Apple Silicon or Intel). See [Install Docker Desktop on Mac | Docker Documentation](https://docs.docker.com/desktop/mac/install/) for detailed instructions.
+
 ### Build and Run Your Own Docker Instance
 
-Once you've installed the packages you need using venv, and have docker installed as well, you can run the app locally on port 8080 using the following Bash commands from the project root:
+Once you've installed the packages you need using `venv` and `pip`, and have Docker installed as well, you can run the app locally on port 8080 by entering the following commands in the project root directory:
 
 ```bash
 sudo docker build -t versadm .
 sudo docker run -it --rm --name versadm -p 8080:8080 versadm
 ```
 
+When your Docker instance starts and runs, you'll see some status `[INFO]` messages appear in the terminal. Leave this terminal window open so you can shut down the Docker instance with `Ctrl-C` when you're done. Don't do that now, or you'll miss all the fun!
+
+Once you've run the `docker build` command (above), you won't need to run it again unless you update the code. You just need to use the `docker run` command to start the Docker instance -- but it doesn't hurt to rebuild your Docker instance with the `docker build` command, either.
+
 Note that you can skip `sudo` when running these commands in PowerShell on Windows 10.
 
-## Test the API
+Once you've got your Docker instance up and running, open your favorite browser to consume the API endpoints you specify. For example, paste this URL in your browser's address bar: `http://localhost:8080/parties`
 
-Then you can run the browser app to consume the API endpoints defined in it.
+You won't see much until you add some data to the API, but you will get a response if the Docker instances is running. Read on to learn how to add sample election data to the API.
 
-To test the API, you can use curl:
+## Populate and test the API with curl
+
+There are a number of API testing GUIs, such as [Swagger](https://swagger.io/) or [Postman](https://www.postman.com/), you could use to test the VersaDM API -- although these tools may have licensing or pricing restrictions that don't match your requirements.
+
+If you've gotten this far, you know how to use the command line, so to test the VersaDM API, you can always use `curl`.
+
+First, you'll want to populate the API with some test data. You can use the sample `jetsons.json` data file included in this repo. Open a new command prompt or terminal window and go to the directory that contains the `jetsons.json` file. Then enter this command:
 
 ```bash
-curl http://localhost:8080/party
+`curl --header "Content-Type: application/json" --header "Accept: application/json" --request PUT --data @jetsons.json http://localhost:8080/admin/load_election_data`
+```
+
+If everything is set up correctly, you'll see a response that looks something like this:
+
+```bash
+{"errors":null,"data":true,"changeId":"","refId":"6a580c3a-fff9-49e9-b111-72f2587c4365"}
+```
+
+Note the critical `"errors":null,"data":true,` part of the response.
+
+Now you can issue GET commands with curl, like this:
+
+```bash
 curl http://localhost:8080/parties
 ```
 
-Storage is all in-memory at this point, nothing persists after you stop the server.  For now, you'll need to call POST methods to put data in before getting data out.
+Or you can enter similar URLs in your favorite browser.
+
+Storage is currently all in-memory, nothing persists after you stop the server. To update the data in memory, use POST, PUT or DELETE commands with `curl` or your favorite API testing too.
+
+To stop the Docker server, go to the terminal where you started Docker and press `Ctrl-C` to shut down the Docker instance.
