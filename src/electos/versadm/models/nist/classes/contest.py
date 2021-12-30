@@ -108,7 +108,8 @@ class RetentionContest(BaseModel):
     ballot_title: Optional[InternationalizedText]
     candidate_id: ObjectIdRef
     con_statement: Optional[InternationalizedText]
-    contest_selection: List[CandidateSelection] = []
+    # BallotMeasureSelection is intentional here, following the NIST spec (single candidate with retain/no-retain opts)
+    contest_selection: List[BallotMeasureSelection] = []
     # BallotMeasureContestType is intentional here, following the NIST spec (no separate type for RetentionContest)
     contest_type: Optional[BallotMeasureContestTypeEnum] = Field(None, alias='Type')
     count_status: List[CountStatus] = []

@@ -130,6 +130,8 @@ test-one:
 test-debug:
 	poetry run pytest -x --pdb
 
+test: test-all
+
 # Uvicorn
 
 serve:

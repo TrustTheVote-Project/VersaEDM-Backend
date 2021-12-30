@@ -59,19 +59,23 @@ class EntityStore:
     def values(self) -> List[Any]:
         return list(self.id_to_obj.values())
 
+    def items(self):
+        return iter(self.id_to_obj.items())
+
 
 class InMemoryDb:
-    election_report = None
-    ballot_styles = EntityStore()
-    candidates = EntityStore()
-    contests = EntityStore()
-    elections = EntityStore()
-    headers = EntityStore()
-    offices = EntityStore()
-    parties = EntityStore()
-    persons = EntityStore()
-    reporting_units = EntityStore()
-    audit_trail: []
+    def __init__(self):
+        self.election_report = None
+        self.ballot_styles = EntityStore()
+        self.candidates = EntityStore()
+        self.contests = EntityStore()
+        self.elections = EntityStore()
+        self.headers = EntityStore()
+        self.offices = EntityStore()
+        self.parties = EntityStore()
+        self.persons = EntityStore()
+        self.reporting_units = EntityStore()
+        self.audit_trail: []
 
     def hash_state(self) -> str:
         # TODO: actually compute a consistent hash

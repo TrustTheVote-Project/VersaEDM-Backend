@@ -26,6 +26,9 @@ class ObjectId(BaseModel):
     def __hash__(self):
         return hash(self.__root__)
 
+    def value(self):
+        return self.__root__
+
 
 class ObjectIdRef(BaseModel):
     __root__: constr(regex=r'[A-Za-z_][A-Za-z0-9._-]*', min_length=1) = Field(
@@ -43,3 +46,6 @@ class ObjectIdRef(BaseModel):
 
     def __hash__(self):
         return hash(self.__root__)
+
+    def value(self):
+        return self.__root__
