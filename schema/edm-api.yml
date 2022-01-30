@@ -35,7 +35,67 @@ tags:
   - name: "reporting-unit"
     description: "Management of geopolitical reporting units, jurisdictions, etc."
 paths:
-  /ballot-styles/{ballotStyleId}:
+  /elections/{electionId}/ballot-styles:
+    parameters:
+      - in: path
+        name: "electionId"
+        description: "Identifies the election to which the operation pertains."
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - ballot-style
+      summary: "Get a list of ballot styles defined for the identified election"
+      operationId: "getBallotStylesForElection"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/BallotStyle'
+        404:
+          description: "Specified election not found."
+    post:
+      tags:
+        - ballot-style
+      summary: "Add a ballot style to a specified election"
+      operationId: "addBallotStyleToElection"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/BallotStyle'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /elections/{electionId}/ballot-styles/{ballotStyleId}:
+    parameters:
+      - in: path
+        name: "electionId"
+        description: "Identifies the election to which the operation pertains."
+        required: true
+        schema:
+          type: "string"
     put:
       tags:
         - ballot-style
@@ -88,7 +148,14 @@ paths:
           description: >
             Deletion not allowed, probably because election has already happened
             and/or has results/counts associated with it.
-  /candidates/{candidateId}:
+  /elections/{electionId}/candidates/{candidateId}:
+    parameters:
+      - in: path
+        name: "electionId"
+        description: "Identifies the election to which the operation pertains."
+        required: true
+        schema:
+          type: "string"
     get:
       tags:
         - candidate
@@ -167,7 +234,149 @@ paths:
           description: >
             Deletion not allowed, probably because election has already happened
             and/or has results/counts associated with it.
-  /contests/{contestId}:
+  /elections/{electionId}/contests/{contestId}/candidates:
+    parameters:
+      - in: path
+        name: "electionId"
+        description: "Identifies the election to which the operation pertains."
+        required: true
+        schema:
+          type: "string"
+    get:
+      tags:
+        - candidate
+      summary: "Get a list of candidates associated with the identified contest"
+      operationId: "getCandidatesForContest"
+      parameters:
+        - in: path
+          name: "contestId"
+          description: "ID of the contest to query for its candidates."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          $ref: '#/components/schemas/Candidate'
+        404:
+          description: "Specified contest not found."
+    post:
+      tags:
+        - candidate
+      summary: "Add a candidate to a specified contest"
+      operationId: "addCandidateToContest"
+      parameters:
+        - in: path
+          name: "contestId"
+          description: "Identifier for the contest to add the candidate to."
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Candidate'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /elections/{electionId}/contests:
+    get:
+      tags:
+        - contest
+      summary: "Get a list of contests defined for the identified election"
+      operationId: "getContestsForElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "ID of the election to query for its contests."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: "object"
+                    properties:
+                      data:
+                        type: "array"
+                        items:
+                          anyOf:
+                            - $ref: '#/components/schemas/BallotMeasureContest'
+                            - $ref: '#/components/schemas/CandidateContest'
+                            - $ref: '#/components/schemas/PartyContest'
+                            - $ref: '#/components/schemas/RetentionContest'
+        404:
+          description: "Specified election not found."
+    post:
+      tags:
+        - contest
+      summary: "Add a contest to a specified election"
+      operationId: "addContestToElection"
+      parameters:
+        - in: path
+          name: "electionId"
+          description: "Identifier for the election to add the contest to."
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  properties:
+                    data:
+                      oneOf:
+                        - $ref: '#/components/schemas/BallotMeasureContest'
+                        - $ref: '#/components/schemas/CandidateContest'
+                        - $ref: '#/components/schemas/PartyContest'
+                        - $ref: '#/components/schemas/RetentionContest'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /elections/{electionId}/contests/{contestId}:
+    parameters:
+      - in: path
+        name: "electionId"
+        description: "Identifies the election to which the operation pertains."
+        required: true
+        schema:
+          type: "string"
     get:
       tags:
         - contest
@@ -363,7 +572,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/ApiRequest'
+                - $ref: '#/components/schemas/ApiResponse'
                 - type: "object"
                   required:
                     - "data"
@@ -377,194 +586,6 @@ paths:
           description: "Invalid request body supplied."
         404:
           description: "Election not found."
-  /elections/{electionId}/ballot-styles:
-    get:
-      tags:
-        - ballot-style
-      summary: "Get a list of ballot styles defined for the identified election"
-      operationId: "getBallotStylesForElection"
-      parameters:
-        - in: path
-          name: "electionId"
-          description: "ID of the election to query for its ballot styles."
-          required: true
-          schema:
-            type: "string"
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: "object"
-                    properties:
-                      data:
-                        type: "array"
-                        items:
-                          $ref: '#/components/schemas/BallotStyle'
-        404:
-          description: "Specified election not found."
-    post:
-      tags:
-        - ballot-style
-      summary: "Add a ballot style to a specified election"
-      operationId: "addBallotStyleToElection"
-      parameters:
-        - in: path
-          name: "electionId"
-          description: "Identifier for the election to add the ballot style to."
-          required: true
-          schema:
-            type: "string"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/ApiRequest'
-                - type: "object"
-                  properties:
-                    data:
-                      $ref: '#/components/schemas/BallotStyle'
-      responses:
-        200:
-          description: OK
-        400:
-          description: "Invalid request body supplied."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-  /contests/{contestId}/candidates:
-    get:
-      tags:
-        - candidate
-      summary: "Get a list of candidates associated with the identified contest"
-      operationId: "getCandidatesForContest"
-      parameters:
-        - in: path
-          name: "contestId"
-          description: "ID of the contest to query for its candidates."
-          required: true
-          schema:
-            type: "string"
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: "object"
-                    properties:
-                      data:
-                        type: "array"
-                        items:
-                          $ref: '#/components/schemas/Candidate'
-        404:
-          description: "Specified contest not found."
-    post:
-      tags:
-        - candidate
-      summary: "Add a candidate to a specified contest"
-      operationId: "addCandidateToContest"
-      parameters:
-        - in: path
-          name: "contestId"
-          description: "Identifier for the contest to add the candidate to."
-          required: true
-          schema:
-            type: "string"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/ApiRequest'
-                - type: "object"
-                  properties:
-                    data:
-                      $ref: '#/components/schemas/Candidate'
-      responses:
-        200:
-          description: OK
-        400:
-          description: "Invalid request body supplied."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-  /elections/{electionId}/contests:
-    get:
-      tags:
-        - contest
-      summary: "Get a list of contests defined for the identified election"
-      operationId: "getContestsForElection"
-      parameters:
-        - in: path
-          name: "electionId"
-          description: "ID of the election to query for its contests."
-          required: true
-          schema:
-            type: "string"
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: "object"
-                    properties:
-                      data:
-                        type: "array"
-                        items:
-                          anyOf:
-                            - $ref: '#/components/schemas/BallotMeasureContest'
-                            - $ref: '#/components/schemas/CandidateContest'
-                            - $ref: '#/components/schemas/PartyContest'
-                            - $ref: '#/components/schemas/RetentionContest'
-        404:
-          description: "Specified election not found."
-    post:
-      tags:
-        - contest
-      summary: "Add a contest to a specified election"
-      operationId: "addContestToElection"
-      parameters:
-        - in: path
-          name: "electionId"
-          description: "Identifier for the election to add the contest to."
-          required: true
-          schema:
-            type: "string"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/ApiRequest'
-                - type: "object"
-                  properties:
-                    data:
-                      oneOf:
-                        - $ref: '#/components/schemas/BallotMeasureContest'
-                        - $ref: '#/components/schemas/CandidateContest'
-                        - $ref: '#/components/schemas/PartyContest'
-                        - $ref: '#/components/schemas/RetentionContest'
-      responses:
-        200:
-          description: OK
-        400:
-          description: "Invalid request body supplied."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
   /election-reports:
     get:
       tags:
@@ -1361,7 +1382,7 @@ components:
       type: "object"
       description: Common properties for an incoming API request.
       properties:
-        _refId:
+        refId:
           type: "string"
           description: >
             Optional client-supplied request ID used for logging/tracing/auditing. Only UUIDs are accepted,
@@ -1411,33 +1432,33 @@ components:
         - type: "object"
           description: API Response object for paginated results.
           properties:
-            _first:
+            first:
               type: "string"
               format: "uri"
               description: >
                 URI for the first set of paginated results.
-            _prev:
+            prev:
               type: "string"
               format: "uri"
               description: >
                 URI for the previous set of paginated results. If blank or
                 absent, there are no previous pages of results available to fetch.
-            _next:
+            next:
               type: "string"
               format: "uri"
               description: >
                 URI for the next set of paginated results. If blank or
                 absent, there are no more pages of results available to fetch.
-            _last:
+            last:
               type: "string"
               format: "uri"
               description: >
-                URI for the last set of paginated results. May be the same as _first.
-            _page_max:
+                URI for the last set of paginated results. May be the same as the 'first' attribute.
+            page_max:
               type: "integer"
               description: >
                 Number of items in a complete page of results.
-            _total_results:
+            total_results:
               type: "integer"
               description: >
                 Total number of results available to fetch across all pages. May be

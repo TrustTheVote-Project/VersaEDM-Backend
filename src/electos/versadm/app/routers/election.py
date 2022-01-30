@@ -25,6 +25,7 @@ def create_router(app_state: InMemoryDb):
     @request_handler
     def create_election(req: ApiRequest[Election]) -> str:
         _validate_election(req.data)
+        # TODO: store dependent objects
         return app_state.elections.put(req.data, overwrite=False)
 
     @router.get('/elections')

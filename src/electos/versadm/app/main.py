@@ -4,9 +4,8 @@ from versadm.app.db.in_memory import InMemoryDb
 from versadm.app import routers
 
 
-def create_app() -> FastAPI:
+def create_app(app_state=InMemoryDb()) -> FastAPI:
     app = FastAPI()
-    app_state = InMemoryDb()
 
     app.include_router(routers.candidate.create_router(app_state))
     app.include_router(routers.contest.create_router(app_state))

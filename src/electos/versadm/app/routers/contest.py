@@ -56,8 +56,7 @@ def create_router(app_state: InMemoryDb):
     @request_handler
     def delete_contest(contest_id: str) -> bool:
         contest = app_state.contests.get(contest_id)
-        elections = [election for election in app_state.elections.values() if contest in election.contest]
-        for election in elections:
+        for election_id, election in app_state.elections.items():
             election.contest.remove(contest)
             app_state.elections.put(election, overwrite=True)
         return app_state.contests.delete(contest_id)
