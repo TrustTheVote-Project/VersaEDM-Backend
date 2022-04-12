@@ -18,12 +18,14 @@ DOCKER_HOST := localhost
 DOCKER_PORT := 8080
 
 SERVER_APP_PATH := $(ROOT)
-SERVER_APP_NAME := $(PROJECT).app.main:create_app()
+# ()s are required for gunicorn endpoints, but uvicorn doesn't use them.
+SERVER_APP_ENTRY := $(PROJECT).app.main:create_app
 SERVER_HOST := 127.0.0.1
 SERVER_PORT := 8080
 
-SERVER_MAIN_FLAGS = --host $(SERVER_HOST) --port $(SERVER_PORT) "$(SERVER_APP_NAME)"
-SERVER_TEST_FLAGS = --reload $(SERVER_MAIN_FLAGS)
+# '--factory' needed because app entry is a factory function not an instance.
+SERVER_MAIN_FLAGS := --host $(SERVER_HOST) --port $(SERVER_PORT) --factory
+SERVER_TEST_FLAGS := $(SERVER_MAIN_FLAGS) --reload
 
 # --- Rules
 
@@ -66,7 +68,9 @@ help:
 	@echo ""
 	@echo "Uvicorn server"
 	@echo ""
-	@echo "  serve              - Run uvicorn server	"
+	@echo "  serve              - Run uvicorn server, simulating production"
+	@echo "  serve-test         - Run uvicorn server for development"
+	@echo "                       Automatically reloads when source changes"
 	@echo ""
 
 
@@ -135,7 +139,7 @@ test: test-all
 # Uvicorn
 
 serve:
-	poetry run uvicorn $(SERVER_MAIN_FLAGS)
+	poetry run uvicorn $(SERVER_MAIN_FLAGS) $(SERVER_APP_ENTRY)
 
 serve-test:
-	poetry run uvicorn $(SERVER_TEST_FLAGS)
+	poetry run uvicorn $(SERVER_TEST_FLAGS) $(SERVER_APP_ENTRY)
