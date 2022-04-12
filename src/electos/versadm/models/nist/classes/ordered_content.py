@@ -21,3 +21,6 @@ class OrderedHeader(BaseModel):
 
     header_id: ObjectIdRef
     ordered_content: List[Union[OrderedContest, 'OrderedHeader']] = []
+
+
+OrderedHeader.update_forward_refs()

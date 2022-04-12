@@ -16,3 +16,6 @@ class OfficeGroup(BaseModel):
 
     class Config:
         alias_generator = fieldname_alias
+
+
+OfficeGroup.update_forward_refs()
