@@ -26,6 +26,9 @@ class ObjectId(BaseModel):
     def __hash__(self):
         return hash(self.__root__)
 
+    def __bool__(self):
+        return bool(self.__root__)
+
     def value(self):
         return self.__root__
 
