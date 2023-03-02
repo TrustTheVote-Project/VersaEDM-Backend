@@ -1,6 +1,8 @@
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
+from versadm.app.util.errors import ReferentialIntegrityError, DuplicateObjectError
+
 
 class EntityStore:
     def __init__(self):
@@ -25,7 +27,7 @@ class EntityStore:
         synonym_referents = {self.id_synonyms[ext_id] for ext_id in external_ids if ext_id in self.id_synonyms}
         if is_generated_id:
             if len(synonym_referents) > 1:
-                raise ValueError('External ids reference multiple known objects.')
+                raise ReferentialIntegrityError('External ids reference multiple known objects.')
             elif len(synonym_referents) == 1:
                 obj_id = list(synonym_referents)[0]
                 is_generated_id = False
@@ -35,10 +37,10 @@ class EntityStore:
         else:
             if synonym_referents.difference({obj_id}):
                 # the external ids refer to different internal ids than this object has
-                raise ValueError('External ids reference a different existing object.')
+                raise ReferentialIntegrityError('External ids reference a different existing object.')
 
         if not overwrite and obj_id in self.id_to_obj:
-            raise ValueError('Object already exists.')
+            raise DuplicateObjectError('Object already exists.')
 
         self.id_to_obj[obj_id] = value
         self.id_synonyms[obj_id] = obj_id
