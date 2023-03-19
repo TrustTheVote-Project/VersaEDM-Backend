@@ -25,6 +25,7 @@ def create_app(app_state=InMemoryDb()) -> FastAPI:
             content={'type': exc.error_code, 'msg': exc.args[0]}
         )
 
+    app.include_router(routers.ballot_style.create_router(app_state))
     app.include_router(routers.candidate.create_router(app_state))
     app.include_router(routers.contest.create_router(app_state))
     app.include_router(routers.election.create_router(app_state))
