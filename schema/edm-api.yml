@@ -720,6 +720,33 @@ paths:
                         type: "array"
                         items:
                           $ref: '#/components/schemas/Header'
+    post:
+      tags:
+        - headers
+      summary: "Add a reusable header"
+      description: ""
+      operationId: "createHeader"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ApiRequest'
+                - type: "object"
+                  required:
+                    - "data"
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Header'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Invalid request body supplied."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
   /headers/{headerId}:
     parameters:
       - in: path
@@ -741,6 +768,7 @@ paths:
                 $ref: '#/components/schemas/Header'
         404:
           description: "Header not found"
+
     put:
       tags:
         - headers
