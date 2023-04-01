@@ -3,6 +3,7 @@ from versadm.app.routers import candidate
 from versadm.app.routers import contest
 from versadm.app.routers import election
 from versadm.app.routers import election_report
+from versadm.app.routers import header
 from versadm.app.routers import health
 from versadm.app.routers import office
 from versadm.app.routers import party
